@@ -14,6 +14,7 @@
 		1E9DCA132B725DE600834947 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E9DCA112B725DE600834947 /* LaunchScreen.storyboard */; };
 		1E9DCA202B72610300834947 /* DayPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA1F2B72610300834947 /* DayPictureViewController.swift */; };
 		1E9DCA222B72613300834947 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA212B72613300834947 /* SearchViewController.swift */; };
+		1E9DCA262B7268A800834947 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA252B7268A800834947 /* CustomNavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		1E9DCA142B725DE600834947 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E9DCA1F2B72610300834947 /* DayPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPictureViewController.swift; sourceTree = "<group>"; };
 		1E9DCA212B72613300834947 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		1E9DCA252B7268A800834947 /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,11 +105,28 @@
 		1E9DCA1E2B725EAE00834947 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1E9DCA0A2B725DE400834947 /* TabBarController.swift */,
+				1E9DCA242B72688D00834947 /* CustomNavigationController */,
+				1E9DCA232B72687B00834947 /* TabBarController */,
 				1E9DCA1F2B72610300834947 /* DayPictureViewController.swift */,
 				1E9DCA212B72613300834947 /* SearchViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		1E9DCA232B72687B00834947 /* TabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				1E9DCA0A2B725DE400834947 /* TabBarController.swift */,
+			);
+			path = TabBarController;
+			sourceTree = "<group>";
+		};
+		1E9DCA242B72688D00834947 /* CustomNavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				1E9DCA252B7268A800834947 /* CustomNavigationController.swift */,
+			);
+			path = CustomNavigationController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E9DCA222B72613300834947 /* SearchViewController.swift in Sources */,
+				1E9DCA262B7268A800834947 /* CustomNavigationController.swift in Sources */,
 				1E9DCA0B2B725DE400834947 /* TabBarController.swift in Sources */,
 				1E9DCA072B725DE400834947 /* AppDelegate.swift in Sources */,
 				1E9DCA202B72610300834947 /* DayPictureViewController.swift in Sources */,
