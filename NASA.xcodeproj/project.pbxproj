@@ -16,8 +16,11 @@
 		1E9DCA222B72613300834947 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA212B72613300834947 /* SearchViewController.swift */; };
 		1E9DCA262B7268A800834947 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA252B7268A800834947 /* CustomNavigationController.swift */; };
 		1E9DCA282B726E4D00834947 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA272B726E4D00834947 /* DetailViewController.swift */; };
-		1E9DCA2A2B72720800834947 /* PictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA292B72720800834947 /* PictureView.swift */; };
+		1E9DCA2A2B72720800834947 /* DetailPictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA292B72720800834947 /* DetailPictureView.swift */; };
 		1E9DCA2D2B72763C00834947 /* UIView - Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA2C2B72763C00834947 /* UIView - Extension.swift */; };
+		1E9DCA2F2B727F6200834947 /* DetailDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA2E2B727F6200834947 /* DetailDescriptionView.swift */; };
+		1E9DCA312B7283A800834947 /* UILabel - Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA302B7283A800834947 /* UILabel - Extension.swift */; };
+		1E9DCA332B72884A00834947 /* TextForTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA322B72884A00834947 /* TextForTitle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,8 +35,11 @@
 		1E9DCA212B72613300834947 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		1E9DCA252B7268A800834947 /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		1E9DCA272B726E4D00834947 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		1E9DCA292B72720800834947 /* PictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureView.swift; sourceTree = "<group>"; };
+		1E9DCA292B72720800834947 /* DetailPictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPictureView.swift; sourceTree = "<group>"; };
 		1E9DCA2C2B72763C00834947 /* UIView - Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView - Extension.swift"; sourceTree = "<group>"; };
+		1E9DCA2E2B727F6200834947 /* DetailDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailDescriptionView.swift; sourceTree = "<group>"; };
+		1E9DCA302B7283A800834947 /* UILabel - Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel - Extension.swift"; sourceTree = "<group>"; };
+		1E9DCA322B72884A00834947 /* TextForTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextForTitle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +104,7 @@
 		1E9DCA1C2B725EA000834947 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1E9DCA322B72884A00834947 /* TextForTitle.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -105,7 +112,8 @@
 		1E9DCA1D2B725EA900834947 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1E9DCA292B72720800834947 /* PictureView.swift */,
+				1E9DCA292B72720800834947 /* DetailPictureView.swift */,
+				1E9DCA2E2B727F6200834947 /* DetailDescriptionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -142,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				1E9DCA2C2B72763C00834947 /* UIView - Extension.swift */,
+				1E9DCA302B7283A800834947 /* UILabel - Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -219,11 +228,14 @@
 				1E9DCA222B72613300834947 /* SearchViewController.swift in Sources */,
 				1E9DCA262B7268A800834947 /* CustomNavigationController.swift in Sources */,
 				1E9DCA0B2B725DE400834947 /* TabBarController.swift in Sources */,
-				1E9DCA2A2B72720800834947 /* PictureView.swift in Sources */,
+				1E9DCA332B72884A00834947 /* TextForTitle.swift in Sources */,
+				1E9DCA2A2B72720800834947 /* DetailPictureView.swift in Sources */,
 				1E9DCA072B725DE400834947 /* AppDelegate.swift in Sources */,
 				1E9DCA2D2B72763C00834947 /* UIView - Extension.swift in Sources */,
+				1E9DCA2F2B727F6200834947 /* DetailDescriptionView.swift in Sources */,
 				1E9DCA202B72610300834947 /* DayPictureViewController.swift in Sources */,
 				1E9DCA092B725DE400834947 /* SceneDelegate.swift in Sources */,
+				1E9DCA312B7283A800834947 /* UILabel - Extension.swift in Sources */,
 				1E9DCA282B726E4D00834947 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

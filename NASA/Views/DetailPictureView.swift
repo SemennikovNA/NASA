@@ -1,5 +1,5 @@
 //
-//  PictureView.swift
+//  DetailPictureView.swift
 //  NASA
 //
 //  Created by Nikita on 06.02.2024.
@@ -7,13 +7,14 @@
 
 import UIKit
 
-final class PictureView: UIView {
+final class DetailPictureView: UIView {
     
     //MARK: - User interface elements
     
     private lazy var pictureImageView: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "nasa")
+//        image.image = UIImage(named: "nasa")
+        image.backgroundColor = .white
         return image
     }()
     
@@ -46,7 +47,7 @@ final class PictureView: UIView {
 
 //MARK: - Private extension
 
-private extension PictureView {
+private extension DetailPictureView {
     /// Setup constraints for picture image view
     func setupConstraints() {
         NSLayoutConstraint.activate([
