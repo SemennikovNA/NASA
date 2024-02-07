@@ -27,8 +27,7 @@ final class DetailViewController: UIViewController {
         let view = UIView()
         return view
     }()
-    private var pictureView = DetailPictureView()
-    private var detailDescriptionView = DetailDescriptionView()
+    private lazy var descriptionTableView = DescriptionTableView()
     
     //MARK: - Life cycle
     
@@ -46,10 +45,26 @@ final class DetailViewController: UIViewController {
         // Setup view's
         view.addSubviews(verticalScroll)
         verticalScroll.addSubviews(contentView)
-        contentView.addSubviews(pictureView, detailDescriptionView)
-        
-        // Setup label's
-        detailDescriptionView.setupLabels(with: textForLabel)
+        contentView.addSubviews(descriptionTableView)
+    }
+}
+
+//MARK: - Extension
+
+extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = descriptionTableView.dequeueReusableCell(withIdentifier: DescriptionTableViewCell.detailCellID, for: indexPath) as? DescriptionTableViewCell else { return UITableViewCell() }
+        cell.setupCellData(with: textForLabel)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return view.frame.height
     }
 }
 
@@ -61,7 +76,7 @@ private extension DetailViewController {
         
         // Vertical scroll
         verticalScroll.snp.makeConstraints { make in
-            make.top.leading.bottom.trailing.equalToSuperview()
+            make.top.leading.bottom.trailing.equalTo(view)
         }
     
         // Content view
@@ -70,19 +85,9 @@ private extension DetailViewController {
             make.width.equalToSuperview()
         }
         
-        // Picture view
-        pictureView.snp.makeConstraints { make in
-            make.top.equalTo(contentView)
-            make.leading.trailing.equalTo(contentView)
-            make.height.equalTo(400)
-        }
-        
-        // Detail description view
-        detailDescriptionView.snp.makeConstraints { make in
-            make.top.equalTo(pictureView.snp.bottom)
-            make.leading.equalTo(contentView).offset(10)
-            make.trailing.equalTo(contentView).offset(-10)
-            make.bottom.equalTo(contentView).offset(-10)
+        // Description table view
+        descriptionTableView.snp.makeConstraints { make in
+            make.top.leading.trailing.bottom.equalTo(contentView)
         }
     }
 }

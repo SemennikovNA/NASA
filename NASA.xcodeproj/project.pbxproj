@@ -23,6 +23,8 @@
 		1E9DCA332B72884A00834947 /* TextForTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA322B72884A00834947 /* TextForTitle.swift */; };
 		1E9DCA362B73445700834947 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1E9DCA352B73445700834947 /* SnapKit */; };
 		1E9DCA382B73445700834947 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 1E9DCA372B73445700834947 /* SnapKit-Dynamic */; };
+		1E9DCA3C2B73D44F00834947 /* DescriptionTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA3B2B73D44F00834947 /* DescriptionTableView.swift */; };
+		1E9DCA3E2B73D5F600834947 /* DescriptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA3D2B73D5F600834947 /* DescriptionTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 		1E9DCA2E2B727F6200834947 /* DetailDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailDescriptionView.swift; sourceTree = "<group>"; };
 		1E9DCA302B7283A800834947 /* UILabel - Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel - Extension.swift"; sourceTree = "<group>"; };
 		1E9DCA322B72884A00834947 /* TextForTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextForTitle.swift; sourceTree = "<group>"; };
+		1E9DCA3B2B73D44F00834947 /* DescriptionTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionTableView.swift; sourceTree = "<group>"; };
+		1E9DCA3D2B73D5F600834947 /* DescriptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +122,8 @@
 			children = (
 				1E9DCA292B72720800834947 /* DetailPictureView.swift */,
 				1E9DCA2E2B727F6200834947 /* DetailDescriptionView.swift */,
+				1E9DCA3B2B73D44F00834947 /* DescriptionTableView.swift */,
+				1E9DCA3D2B73D5F600834947 /* DescriptionTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -238,6 +244,7 @@
 			files = (
 				1E9DCA222B72613300834947 /* SearchViewController.swift in Sources */,
 				1E9DCA262B7268A800834947 /* CustomNavigationController.swift in Sources */,
+				1E9DCA3E2B73D5F600834947 /* DescriptionTableViewCell.swift in Sources */,
 				1E9DCA0B2B725DE400834947 /* TabBarController.swift in Sources */,
 				1E9DCA332B72884A00834947 /* TextForTitle.swift in Sources */,
 				1E9DCA2A2B72720800834947 /* DetailPictureView.swift in Sources */,
@@ -245,6 +252,7 @@
 				1E9DCA2D2B72763C00834947 /* UIView - Extension.swift in Sources */,
 				1E9DCA2F2B727F6200834947 /* DetailDescriptionView.swift in Sources */,
 				1E9DCA202B72610300834947 /* DayPictureViewController.swift in Sources */,
+				1E9DCA3C2B73D44F00834947 /* DescriptionTableView.swift in Sources */,
 				1E9DCA092B725DE400834947 /* SceneDelegate.swift in Sources */,
 				1E9DCA312B7283A800834947 /* UILabel - Extension.swift in Sources */,
 				1E9DCA282B726E4D00834947 /* DetailViewController.swift in Sources */,
