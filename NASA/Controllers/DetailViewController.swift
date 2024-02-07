@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SnapKit
 
-final class DetailViewController: UIViewController, UIScrollViewDelegate {
+final class DetailViewController: UIViewController {
     
     //MARK: - Properties
     
@@ -15,13 +16,17 @@ final class DetailViewController: UIViewController, UIScrollViewDelegate {
     
     //MARK: - User interface elements
     
-    private var horizontalScroll: UIScrollView = {
+    private var verticalScroll: UIScrollView = {
         let scroll = UIScrollView()
         scroll.bounces = true
         scroll.alwaysBounceVertical = true
+        scroll.showsVerticalScrollIndicator = false
         return scroll
     }()
-    private lazy var contentView = UIView()
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        return view
+    }()
     private var pictureView = DetailPictureView()
     private var detailDescriptionView = DetailDescriptionView()
     
@@ -39,15 +44,12 @@ final class DetailViewController: UIViewController, UIScrollViewDelegate {
     
     private func setupView() {
         // Setup view's
-        view.addSubviews(horizontalScroll)
-        horizontalScroll.addSubviews(contentView)
+        view.addSubviews(verticalScroll)
+        verticalScroll.addSubviews(contentView)
         contentView.addSubviews(pictureView, detailDescriptionView)
         
         // Setup label's
         detailDescriptionView.setupLabels(with: textForLabel)
-        
-        horizontalScroll.contentSize = CGSize(width: contentView.frame.size.width, height: contentView.frame.size.width)
-        horizontalScroll.delegate = self
     }
 }
 
@@ -56,31 +58,31 @@ final class DetailViewController: UIViewController, UIScrollViewDelegate {
 private extension DetailViewController {
     
     func setupConstraints() {
-        NSLayoutConstraint.activate([
-            // Horizontal scroll
-            horizontalScroll.topAnchor.constraint(equalTo: view.topAnchor),
-            horizontalScroll.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            horizontalScroll.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            horizontalScroll.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            // Content view
-            contentView.topAnchor.constraint(equalTo: horizontalScroll.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: horizontalScroll.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: horizontalScroll.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: horizontalScroll.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: horizontalScroll.widthAnchor),
-            
-            // Picture view
-            pictureView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
-            pictureView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -20),
-            pictureView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 20),
-            pictureView.heightAnchor.constraint(equalToConstant: 400),
-            
-            // Detail description view
-            detailDescriptionView.topAnchor.constraint(equalTo: pictureView.bottomAnchor),
-            detailDescriptionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            detailDescriptionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            detailDescriptionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
-        ])
+        
+        // Vertical scroll
+        verticalScroll.snp.makeConstraints { make in
+            make.top.leading.bottom.trailing.equalToSuperview()
+        }
+    
+        // Content view
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(verticalScroll)
+            make.width.equalToSuperview()
+        }
+        
+        // Picture view
+        pictureView.snp.makeConstraints { make in
+            make.top.equalTo(contentView)
+            make.leading.trailing.equalTo(contentView)
+            make.height.equalTo(400)
+        }
+        
+        // Detail description view
+        detailDescriptionView.snp.makeConstraints { make in
+            make.top.equalTo(pictureView.snp.bottom)
+            make.leading.equalTo(contentView).offset(10)
+            make.trailing.equalTo(contentView).offset(-10)
+            make.bottom.equalTo(contentView).offset(-10)
+        }
     }
 }

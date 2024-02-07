@@ -13,8 +13,8 @@ final class DetailPictureView: UIView {
     
     private lazy var pictureImageView: UIImageView = {
         let image = UIImageView()
-//        image.image = UIImage(named: "nasa")
-        image.backgroundColor = .white
+        image.image = UIImage(named: "nasa")
+//        image.backgroundColor = .white
         return image
     }()
     
