@@ -21,9 +21,9 @@ class DetailTableViewCell: UITableViewCell {
         image.image = UIImage(named: "nasa")
         return image
     }()
-    private lazy var authorLabel = UILabel(font: .systemFont(ofSize: 15), textColor: .lightGray)
+    private lazy var authorLabel = UILabel(font: .systemFont(ofSize: 17), textColor: .gray)
     private lazy var headLabel = UILabel(font: .systemFont(ofSize: 20), textColor: .white)
-    private lazy var descriptionLabel = UILabel(font: .systemFont(ofSize: 17), textColor: .white)
+    private lazy var descriptionLabel = UILabel(font: .systemFont(ofSize: 17), numberOfLines: 0, textColor: .white)
     
     //MARK: - Initialize
     
@@ -42,14 +42,17 @@ class DetailTableViewCell: UITableViewCell {
     //MARK: - Method
     
     func setupDataForCell(with model: TextForTitle) {
-        
+        authorLabel.text = model.authorLabelText
+        headLabel.text = model.headLabelText
+        descriptionLabel.text = model.descriptionTextViewText
     }
     
     //MARK: - Private method
     
     private func setupCell() {
+        contentCellView.backgroundColor = .black
         contentView.addSubviews(contentCellView)
-        contentCellView.addSubviews(dayImage)
+        contentCellView.addSubviews(dayImage, authorLabel, headLabel, descriptionLabel)
     }
     
     private func setupContraints() {
@@ -61,7 +64,28 @@ class DetailTableViewCell: UITableViewCell {
         // Day image
         dayImage.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(contentCellView)
-            make.height.equalTo(400)
+            make.height.equalTo(350)
+        }
+        
+        // Author lable
+        authorLabel.snp.makeConstraints { make in
+            make.top.equalTo(dayImage.snp_bottomMargin).offset(20)
+            make.leading.trailing.equalTo(contentCellView).inset(20)
+            make.height.equalTo(35)
+        }
+        
+        // Head label
+        headLabel.snp.makeConstraints { make in
+            make.top.equalTo(authorLabel.snp_bottomMargin).offset(10)
+            make.leading.trailing.equalTo(contentCellView).inset(20)
+            make.height.equalTo(40)
+        }
+        
+        // Description label
+        descriptionLabel.snp.makeConstraints { make in
+            make.top.equalTo(headLabel.snp_bottomMargin).offset(15)
+            make.leading.trailing.bottom.equalTo(contentCellView).inset(20)
+            
         }
     }
     

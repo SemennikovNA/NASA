@@ -50,7 +50,7 @@ final class DetailViewController: UIViewController {
         // Signature delegate
         detailTableView.delegate = self
         detailTableView.dataSource = self
-        detailTableView.backgroundColor = .white
+//        detailTableView.backgroundColor = .white
     }
 }
 
@@ -64,13 +64,8 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = detailTableView.dequeueReusableCell(withIdentifier: "DetailTableCell", for: indexPath) as! DetailTableViewCell
-//        cell.setupDataForCell(with: <#T##TextForTitle#>)
+        cell.setupDataForCell(with: textForLabel)
         return cell
-    }
-    
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return contentView.frame.height
     }
     
 }
@@ -97,6 +92,7 @@ private extension DetailViewController {
         // Detail table
         detailTableView.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalTo(contentView)
+            make.height.equalTo(contentView.snp.height)
         }
     }
 }

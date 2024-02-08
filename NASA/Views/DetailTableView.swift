@@ -24,6 +24,7 @@ class DetailTableView: UITableView {
     }
     
     private func setupDetailTable() {
+        self.backgroundColor = .black
         register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.reuseIdentifier)
     }
 }
