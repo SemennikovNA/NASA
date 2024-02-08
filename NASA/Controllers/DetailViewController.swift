@@ -23,11 +23,11 @@ final class DetailViewController: UIViewController {
         scroll.showsVerticalScrollIndicator = false
         return scroll
     }()
-    private lazy var contentView: UIView = {
+    private var contentView: UIView = {
         let view = UIView()
         return view
     }()
-    private lazy var descriptionTableView = DescriptionTableView()
+    private var detailTableView = DetailTableView()
     
     //MARK: - Life cycle
     
@@ -45,7 +45,12 @@ final class DetailViewController: UIViewController {
         // Setup view's
         view.addSubviews(verticalScroll)
         verticalScroll.addSubviews(contentView)
-        contentView.addSubviews(descriptionTableView)
+        contentView.addSubviews(detailTableView)
+        
+        // Signature delegate
+        detailTableView.delegate = self
+        detailTableView.dataSource = self
+        detailTableView.backgroundColor = .white
     }
 }
 
@@ -58,14 +63,16 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = descriptionTableView.dequeueReusableCell(withIdentifier: DescriptionTableViewCell.detailCellID, for: indexPath) as? DescriptionTableViewCell else { return UITableViewCell() }
-        cell.setupCellData(with: textForLabel)
+        let cell = detailTableView.dequeueReusableCell(withIdentifier: "DetailTableCell", for: indexPath) as! DetailTableViewCell
+//        cell.setupDataForCell(with: <#T##TextForTitle#>)
         return cell
     }
     
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return view.frame.height
+        return contentView.frame.height
     }
+    
 }
 
 //MARK: - Private extension
@@ -78,16 +85,18 @@ private extension DetailViewController {
         verticalScroll.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalTo(view)
         }
-    
+        
         // Content view
         contentView.snp.makeConstraints { make in
-            make.edges.equalTo(verticalScroll)
-            make.width.equalToSuperview()
+            make.center.equalTo(verticalScroll)
+            make.top.equalTo(verticalScroll).inset(-60)
+            make.leading.trailing.bottom.equalTo(verticalScroll)
+            make.width.equalTo(verticalScroll.snp.width)
         }
         
-        // Description table view
-        descriptionTableView.snp.makeConstraints { make in
-            make.top.leading.trailing.bottom.equalTo(contentView)
+        // Detail table
+        detailTableView.snp.makeConstraints { make in
+            make.top.leading.bottom.trailing.equalTo(contentView)
         }
     }
 }

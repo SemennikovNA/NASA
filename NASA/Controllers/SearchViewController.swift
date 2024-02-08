@@ -9,8 +9,35 @@ import UIKit
 
 final class SearchViewController: UIViewController {
     
+    //MARK: - Properties
+     
+    var text = TextForTitle()
+    
+    //MARK: - User interface elements
+    
+    
+    
+    //MARK: - Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+        
+        // Call method's
+        setupView()
+        setupConstraints()
+    }
+    
+    //MARK: - Private method
+    
+    private func setupView() {
+    
+    }
+}
+
+//MARK: - Private extension
+
+private extension SearchViewController {
+     
+    func setupConstraints() {
     }
 }
