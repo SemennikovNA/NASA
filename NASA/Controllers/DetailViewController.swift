@@ -40,7 +40,7 @@ final class DetailViewController: UIViewController {
     }
     
     //MARK: - Private
-    
+    /// Setup user elements in self view
     private func setupView() {
         // Setup view's
         view.addSubviews(verticalScroll)
@@ -59,7 +59,7 @@ final class DetailViewController: UIViewController {
 }
 
 //MARK: - Extension
-
+//MARK: UITableViewDelegates methods
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -78,13 +78,12 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
 
 private extension DetailViewController {
     
+    /// Setup constraints for search view controller
     func setupConstraints() {
-        
         // Vertical scroll
         verticalScroll.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalTo(view)
         }
-        
         // Content view
         contentView.snp.makeConstraints { make in
             make.center.equalTo(verticalScroll)
@@ -92,7 +91,6 @@ private extension DetailViewController {
             make.leading.trailing.bottom.equalTo(verticalScroll)
             make.width.equalTo(verticalScroll.snp.width)
         }
-        
         // Detail table
         detailTableView.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalTo(contentView)

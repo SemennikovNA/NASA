@@ -29,20 +29,25 @@ class DayPictureViewController: UIViewController {
     
     
     //MARK: - Private methods
-    
+    /// Setup user elements in self view
     private func setupView() {
         // Setup view
         view.backgroundColor = .black
         view.addSubviews(pictureCollectionView)
         
-        // Setup picture collection view
+        // Signature delegates
+        signatureDelegates()
+    }
+    
+    /// Method for signature delegates
+    private func signatureDelegates() {
         pictureCollectionView.delegate = self
         pictureCollectionView.dataSource = self
     }
 }
 
 //MARK: - Extension
-//MARK: UICollectionDelegate, UICollectionDataSource, UICollectionViewDelegateFlowLayout methods
+//MARK: UICollectionViewDelegates methods
 
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -93,8 +98,9 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
 //MARK: - Private extension
 
 private extension DayPictureViewController {
-    
+    /// Setup constraints for search view controller
     func setupConstraints() {
+        // Picture collection view
         pictureCollectionView.snp.makeConstraints { make in
             make.edges.equalTo(view)
             make.width.equalTo(view.snp.width)
