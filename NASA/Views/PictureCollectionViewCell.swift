@@ -15,9 +15,8 @@ class PictureCollectionViewCell: UICollectionViewCell {
     
     //MARK: - User interface elements
     
-    private lazy var contentCellView = UIView()
     private lazy var pictureCellView = UIImageView()
-//    private lazy var pictureLabel = UILabel(font: .systemFont(ofSize: 18), textColor: .white)
+    private lazy var pictureLabel = UILabel(font: .boldSystemFont(ofSize: 18), numberOfLines: 0, textColor: .white, textAlignment: .center)
     
     //MARK: - Initialize
     
@@ -33,46 +32,34 @@ class PictureCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        contentView.layer.cornerRadius = contentView.frame.size.width / 10
-    }
-    
     //MARK: - Methods
     
-    func setupPictureCollectionCell(with model: TextForTitle) {
-//        pictureLabel.text = model.textForCollection
+    func setupPictureCollectionCell(with model: MokData) {
+        pictureLabel.text = model.textForCollection
+        pictureCellView.image = model.image
     }
     
     //MARK: - Private method
     
     private func setupCollectionCell() {
-        contentView.addSubviews(contentCellView)
-        contentCellView.addSubviews(pictureCellView)
-//        pictureCellView.addSubviews(pictureLabel)
-        pictureCellView.image = UIImage(named: "nasa")
-        
-        // Setup picture label
-        self.layer.borderColor = UIColor.white.cgColor
-        self.layer.borderWidth = 1
-//        pictureLabel.adjustsFontSizeToFitWidth = true
-//        pictureLabel.minimumScaleFactor = 0.5
+        contentView.addSubviews(pictureCellView)
+        pictureCellView.addSubviews(pictureLabel)
+        pictureCellView.contentMode = .scaleAspectFill
     }
     
     private func setupConstraints() {
-        
-        // Content cell view
-        contentCellView.snp.makeConstraints { make in
-            make.edges.equalTo(contentView)
-        }
-        
-        // Picture cell view
+         // Picture cell view
         pictureCellView.snp.makeConstraints { make in
-            make.edges.equalTo(contentCellView)
+            make.top.equalTo(contentView.snp_topMargin).inset(-10)
+            make.bottom.equalTo(contentView.snp_bottomMargin).inset(-10)
+            make.leading.equalTo(contentView.snp_leadingMargin).inset(-10)
+            make.trailing.equalTo(contentView.snp_trailingMargin).inset(-10)
         }
         
-//        pictureLabel.snp.makeConstraints { make in
-//            make.center.equalTo(pictureCellView.center)
-//            make.bottom.equalTo(pictureCellView.snp_bottomMargin).inset(20)
-//        }
+        pictureLabel.snp.makeConstraints { make in
+            make.leading.equalTo(pictureCellView.snp_leadingMargin)
+            make.trailing.equalTo(pictureCellView.snp_trailingMargin)
+            make.bottom.equalTo(pictureCellView.snp_bottomMargin).inset(10)
+        }
     }
 }

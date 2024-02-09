@@ -12,7 +12,7 @@ final class DetailViewController: UIViewController {
     
     //MARK: - Properties
     
-    private var textForLabel = TextForTitle()
+    private var textForLabel = MokData()
     
     //MARK: - User interface elements
     
@@ -48,9 +48,13 @@ final class DetailViewController: UIViewController {
         contentView.addSubviews(detailTableView)
         
         // Signature delegate
+        signatureDelegates()
+    }
+    
+    /// Method for signature delegates
+    private func signatureDelegates() {
         detailTableView.delegate = self
         detailTableView.dataSource = self
-//        detailTableView.backgroundColor = .white
     }
 }
 

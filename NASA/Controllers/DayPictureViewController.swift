@@ -11,7 +11,7 @@ class DayPictureViewController: UIViewController {
     
     //MARK: - Properties
     
-    let textForLabel = TextForTitle()
+    let mokData = MokData()
     
     //MARK: - User interface elements
     
@@ -26,6 +26,7 @@ class DayPictureViewController: UIViewController {
         setupView()
         setupConstraints()
     }
+    
     
     //MARK: - Private methods
     
@@ -51,12 +52,14 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = pictureCollectionView.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
-        cell.setupPictureCollectionCell(with: textForLabel)
+        cell.layer.cornerRadius = cell.frame.size.width / 9
+        cell.clipsToBounds = true
+        cell.setupPictureCollectionCell(with: mokData)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let sizeCell = CGSize(width: 190, height: 190)
+        let sizeCell = CGSize(width: 190, height: 200)
         return sizeCell
     }
     
@@ -69,6 +72,22 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         let insets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20)
         return insets
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
+            header.setupHeaderView(with: mokData)
+            header.layoutSubviews()
+            return header
+        } else {
+            return UICollectionReusableView()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: 150, height: 200)
+    }
+
 }
 
 //MARK: - Private extension

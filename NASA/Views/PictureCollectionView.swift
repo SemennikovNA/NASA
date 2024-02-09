@@ -28,6 +28,7 @@ class PictureCollectionView: UICollectionView {
     
     private func setupPictureCollectionView() {
         self.backgroundColor = .black
+        register(HeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderReusableView.reuseIdentifire)
         register(PictureCollectionViewCell.self, forCellWithReuseIdentifier: PictureCollectionViewCell.reuseIdentifire)
     }
 }

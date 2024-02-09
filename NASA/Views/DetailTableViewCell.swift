@@ -42,7 +42,7 @@ class DetailTableViewCell: UITableViewCell {
     
     //MARK: - Method
     
-    func setupDataForCell(with model: TextForTitle) {
+    func setupDataForCell(with model: MokData) {
         authorLabel.text = model.authorLabelText
         headLabel.text = model.headLabelText
         descriptionLabel.text = model.descriptionTextViewText
