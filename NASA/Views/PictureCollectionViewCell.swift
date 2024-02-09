@@ -17,7 +17,7 @@ class PictureCollectionViewCell: UICollectionViewCell {
     
     private lazy var contentCellView = UIView()
     private lazy var pictureCellView = UIImageView()
-    private lazy var pictureLabel = UILabel(font: .systemFont(ofSize: 16), textColor: .white)
+//    private lazy var pictureLabel = UILabel(font: .systemFont(ofSize: 18), textColor: .white)
     
     //MARK: - Initialize
     
@@ -33,10 +33,14 @@ class PictureCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        contentView.layer.cornerRadius = contentView.frame.size.width / 10
+    }
+    
     //MARK: - Methods
     
     func setupPictureCollectionCell(with model: TextForTitle) {
-        pictureLabel.text = model.textForCollection
+//        pictureLabel.text = model.textForCollection
     }
     
     //MARK: - Private method
@@ -44,8 +48,14 @@ class PictureCollectionViewCell: UICollectionViewCell {
     private func setupCollectionCell() {
         contentView.addSubviews(contentCellView)
         contentCellView.addSubviews(pictureCellView)
-        pictureCellView.addSubviews(pictureLabel)
+//        pictureCellView.addSubviews(pictureLabel)
         pictureCellView.image = UIImage(named: "nasa")
+        
+        // Setup picture label
+        self.layer.borderColor = UIColor.white.cgColor
+        self.layer.borderWidth = 1
+//        pictureLabel.adjustsFontSizeToFitWidth = true
+//        pictureLabel.minimumScaleFactor = 0.5
     }
     
     private func setupConstraints() {
@@ -60,10 +70,9 @@ class PictureCollectionViewCell: UICollectionViewCell {
             make.edges.equalTo(contentCellView)
         }
         
-        // Picture label
-        pictureLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(pictureLabel).inset(10)
-            make.bottom.equalTo(pictureLabel).inset(10)
-        }
+//        pictureLabel.snp.makeConstraints { make in
+//            make.center.equalTo(pictureCellView.center)
+//            make.bottom.equalTo(pictureCellView.snp_bottomMargin).inset(20)
+//        }
     }
 }

@@ -27,6 +27,7 @@ class PictureCollectionView: UICollectionView {
     //MARK: - Private method
     
     private func setupPictureCollectionView() {
+        self.backgroundColor = .black
         register(PictureCollectionViewCell.self, forCellWithReuseIdentifier: PictureCollectionViewCell.reuseIdentifire)
     }
 }

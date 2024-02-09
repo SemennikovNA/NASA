@@ -56,22 +56,17 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let sizeCell = CGSize(width: 180, height: 100)
-        let firstItemSize = CGSize(width: collectionView.bounds.width, height: 100)
-        
-        if indexPath.item == 0 {
-            return firstItemSize
-        } else {
-            return sizeCell
-        }
+        let sizeCell = CGSize(width: 190, height: 190)
+        return sizeCell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 8
+        let lineSpacing: CGFloat = 10
+        return lineSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let insets = UIEdgeInsets(top: 20, left: 30, bottom: 0, right: 30)
+        let insets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20)
         return insets
     }
 }

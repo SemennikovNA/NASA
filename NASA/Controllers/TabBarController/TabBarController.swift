@@ -22,6 +22,13 @@ final class TabBarController: UITabBarController {
     
     private func setupTabBar() {
         viewControllers = [setupViewControllers(viewController: DayPictureViewController(), title: "Фото дня", image: "photo", selectedImage: "photo.fill"), setupViewControllers(viewController: SearchViewController(), title: "Поиск", image: "magnifyingglass.circle", selectedImage: "magnifyingglass.circle.fill")]
+        setupTabBarApperance()
+    }
+    
+    private func setupTabBarApperance() {
+        let apperance = UITabBarAppearance()
+        apperance.backgroundColor = .black
+        tabBar.standardAppearance = apperance
         tabBar.tintColor = .white
         tabBar.unselectedItemTintColor = .lightGray
     }
