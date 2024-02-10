@@ -12,10 +12,30 @@ class DayPictureViewController: UIViewController {
     //MARK: - Properties
     
     let mokData = MokData()
+    let networkManager = NetworkManager.shared
+    var pictureArr: [DayPictureModel] {
+        didSet {
+            DispatchQueue.main.async {
+                self.pictureCollectionView.reloadData()
+            }
+        }
+    }
     
     //MARK: - User interface elements
     
     private let pictureCollectionView = PictureCollectionView()
+    
+    
+    //MARK: - Initialize
+    
+    init() {
+        self.pictureArr = []
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Life cycle
     
@@ -27,6 +47,10 @@ class DayPictureViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchData()
+    }
     
     //MARK: - Private methods
     /// Setup user elements in self view
@@ -43,23 +67,49 @@ class DayPictureViewController: UIViewController {
     private func signatureDelegates() {
         pictureCollectionView.delegate = self
         pictureCollectionView.dataSource = self
+        networkManager.delegate = self
+    }
+    
+    private func fetchData() {
+        networkManager.fetchData(count: 20) { result in
+            switch result {
+            case .success(let data):
+                print(data)
+            case .failure(let failure):
+                print(failure)
+            }
+        }
     }
 }
 
 //MARK: - Extension
+
+extension DayPictureViewController: NetworkManagerDelegate {
+    
+    func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel]) {
+        self.pictureArr = model
+    }
+    
+    func didFailWithError(_ error: Error) {
+        print(error.localizedDescription)
+    }
+}
+
+
 //MARK: UICollectionViewDelegates methods
 
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return pictureArr.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = pictureCollectionView.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
         cell.layer.cornerRadius = cell.frame.size.width / 9
         cell.clipsToBounds = true
-        cell.setupPictureCollectionCell(with: mokData)
+        let dataForItem = pictureArr[indexPath.item + 1]
+        cell.setupPictureCollectionCell(with: dataForItem)
         return cell
     }
     
@@ -81,8 +131,10 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
-            header.setupHeaderView(with: mokData)
-            header.layoutSubviews()
+            if let firstPicture = pictureArr.first {
+                  header.setupHeaderView(with: firstPicture)
+                  header.layoutSubviews()
+              }
             return header
         } else {
             return UICollectionReusableView()
@@ -92,7 +144,7 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: 150, height: 200)
     }
-
+    
 }
 
 //MARK: - Private extension

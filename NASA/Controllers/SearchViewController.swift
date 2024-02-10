@@ -74,7 +74,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = searchCollection.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
-        cell.setupPictureCollectionCell(with: mokData)
+//        cell.setupPictureCollectionCell(with: )
         cell.layer.cornerRadius = cell.frame.size.width / 15
         cell.clipsToBounds = true
         return cell

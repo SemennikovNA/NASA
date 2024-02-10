@@ -34,9 +34,9 @@ class PictureCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Methods
     
-    func setupPictureCollectionCell(with model: MokData) {
-        pictureLabel.text = model.textForCollection
-        pictureCellView.image = model.image
+    func setupPictureCollectionCell(with model: DayPictureModel) {
+        pictureLabel.text = model.title
+//        pictureCellView.image = model.hdurl
     }
     
     //MARK: - Private method
