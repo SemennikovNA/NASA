@@ -13,6 +13,7 @@ class DayPictureViewController: UIViewController {
     
     let mokData = MokData()
     let networkManager = NetworkManager.shared
+    let cache = ImageCache.shared
     var pictureArr: [DayPictureModel] {
         didSet {
             DispatchQueue.main.async {
@@ -108,8 +109,9 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         let cell = pictureCollectionView.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
         cell.layer.cornerRadius = cell.frame.size.width / 9
         cell.clipsToBounds = true
+        let image = UIImage(named: "nasa")
         let dataForItem = pictureArr[indexPath.item + 1]
-        cell.setupPictureCollectionCell(with: dataForItem)
+        cell.setupPictureCollectionCell(with: dataForItem, image: image!)
         return cell
     }
     
@@ -131,8 +133,9 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
+            let image = UIImage(named: "nasa")
             if let firstPicture = pictureArr.first {
-                  header.setupHeaderView(with: firstPicture)
+                  header.setupHeaderView(with: firstPicture, image: image!)
                   header.layoutSubviews()
               }
             return header

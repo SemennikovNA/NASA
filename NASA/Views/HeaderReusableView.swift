@@ -41,8 +41,8 @@ class HeaderReusableView: UICollectionReusableView {
     
     //MARK: - Method
     
-    func setupHeaderView(with model: DayPictureModel) {
-//        pictureView.image = model.image
+    func setupHeaderView(with model: DayPictureModel, image: UIImage) {
+        pictureView.image = image
         pictureLabel.text = model.title
     }
         

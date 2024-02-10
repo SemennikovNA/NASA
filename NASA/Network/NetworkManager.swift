@@ -5,7 +5,7 @@
 //  Created by Nikita on 10.02.2024.
 //
 
-import Foundation
+import UIKit
 
 protocol NetworkManagerDelegate {
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
@@ -63,6 +63,29 @@ class NetworkManager {
             
         }.resume()
     }
+    
+    func fetchImage(withURL url: URL, completion: @escaping (Result<UIImage, Error>) -> ()) {
+        if let cachedImage = ImageCache.shared.getImage(for: url.absoluteString as NSString) {
+                completion(.success(cachedImage))
+                return
+            }
+            
+            session.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data, let image = UIImage(data: data) else {
+                    let error = NSError(domain: "com.example.NASA", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode image data"])
+                    completion(.failure(error))
+                    return
+                }
+                
+                ImageCache.shared.cacheImage(image: image, for: url.absoluteString as NSString)
+                completion(.success(image))
+            }.resume()
+        }
 }
 
 
