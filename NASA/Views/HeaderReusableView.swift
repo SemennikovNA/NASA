@@ -15,6 +15,13 @@ class HeaderReusableView: UICollectionReusableView {
     
     //MARK: - User interface elements
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.style = .large
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     private lazy var pictureView = UIImageView()
     private lazy var pictureLabel = UILabel(font: .boldSystemFont(ofSize: 22), numberOfLines: 0, textColor: .white, textAlignment: .center)
     
@@ -23,6 +30,9 @@ class HeaderReusableView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.activityIndicator.startAnimating()
+        }
         
         // Call method's
         setupHeaderViewElements()
@@ -41,16 +51,20 @@ class HeaderReusableView: UICollectionReusableView {
     
     //MARK: - Method
     
-    func setupHeaderView(with model: DayPictureModel, image: UIImage) {
-        pictureView.image = image
+    func setupHeaderView(with model: DayPictureModel) {
         pictureLabel.text = model.title
+    }
+    
+    func setupImageForHeader(image: UIImage) {
+        pictureView.image = image
+        activityIndicator.stopAnimating()
     }
         
     //MARK: - Private methods
     
     private func setupHeaderViewElements() {
         
-        self.addSubviews(pictureView)
+        self.addSubviews(pictureView, activityIndicator)
         pictureView.addSubviews(pictureLabel)
         
         self.layer.zPosition = 0
@@ -71,6 +85,11 @@ class HeaderReusableView: UICollectionReusableView {
             make.leading.equalTo(pictureView.snp_leadingMargin)
             make.trailing.equalTo(pictureView.snp_trailingMargin)
             make.bottom.equalTo(pictureView.snp_bottomMargin).inset(10)
+        }
+        
+        // Activity indicator
+        activityIndicator.snp.makeConstraints { make in
+            make.edges.equalTo(self)
         }
     }
 }

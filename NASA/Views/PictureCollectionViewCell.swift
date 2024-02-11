@@ -14,7 +14,15 @@ class PictureCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifire = "PrctureCollectionViewCell"
     
     //MARK: - User interface elements
-    
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.style = .large
+        indicator.color = .white
+        indicator.startAnimating()
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+
     private lazy var pictureCellView = UIImageView()
     private lazy var pictureLabel = UILabel(font: .boldSystemFont(ofSize: 18), numberOfLines: 0, textColor: .white, textAlignment: .center)
     
@@ -34,15 +42,16 @@ class PictureCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Methods
     
-    func setupPictureCollectionCell(with model: DayPictureModel, image: UIImage) {
+    func setupPictureCollectionCell(with model: DayPictureModel, with image: UIImage) {
         pictureLabel.text = model.title
         pictureCellView.image = image
+        activityIndicator.stopAnimating()
     }
     
     //MARK: - Private method
     
     private func setupCollectionCell() {
-        contentView.addSubviews(pictureCellView)
+        contentView.addSubviews(pictureCellView, activityIndicator)
         pictureCellView.addSubviews(pictureLabel)
         pictureCellView.contentMode = .scaleAspectFill
     }
@@ -56,10 +65,16 @@ class PictureCollectionViewCell: UICollectionViewCell {
             make.trailing.equalTo(contentView.snp_trailingMargin).inset(-10)
         }
         
+        // Picture label
         pictureLabel.snp.makeConstraints { make in
             make.leading.equalTo(pictureCellView.snp_leadingMargin)
             make.trailing.equalTo(pictureCellView.snp_trailingMargin)
             make.bottom.equalTo(pictureCellView.snp_bottomMargin).inset(10)
+        }
+        
+        // Activity indicator
+        activityIndicator.snp.makeConstraints { make in
+            make.edges.equalTo(contentView)
         }
     }
 }
