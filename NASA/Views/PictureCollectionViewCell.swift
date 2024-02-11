@@ -40,6 +40,13 @@ class PictureCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        pictureLabel.text = nil
+        pictureCellView.image = nil
+    }
+    
     //MARK: - Methods
     
     func setupPictureCollectionCell(with model: DayPictureModel, with image: UIImage) {

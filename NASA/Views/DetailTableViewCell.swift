@@ -19,7 +19,7 @@ class DetailTableViewCell: UITableViewCell {
     private lazy var contentCellView = UIView()
     private lazy var dayImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "nasa")
+        image.contentMode = .scaleToFill
         return image
     }()
     private lazy var authorLabel = UILabel(font: .systemFont(ofSize: 17), textColor: .gray)
@@ -42,10 +42,11 @@ class DetailTableViewCell: UITableViewCell {
     
     //MARK: - Method
     
-    func setupDataForCell(with model: MokData) {
-        authorLabel.text = model.authorLabelText
-        headLabel.text = model.headLabelText
-        descriptionLabel.text = model.descriptionTextViewText
+    func setupDataForCell(author: String, head: String, description: String, image: UIImage) {
+        authorLabel.text = author
+        headLabel.text = head
+        descriptionLabel.text = description
+        dayImage.image = image
     }
     
     //MARK: - Private method
@@ -64,8 +65,9 @@ class DetailTableViewCell: UITableViewCell {
         
         // Day image
         dayImage.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(contentCellView)
-            make.height.equalTo(350)
+            make.top.equalTo(contentView.snp.top)
+            make.leading.trailing.equalTo(contentCellView)
+            make.height.equalTo(300)
         }
         
         // Author lable
@@ -79,7 +81,7 @@ class DetailTableViewCell: UITableViewCell {
         headLabel.snp.makeConstraints { make in
             make.top.equalTo(authorLabel.snp_bottomMargin).offset(10)
             make.leading.trailing.equalTo(contentCellView).inset(20)
-            make.height.equalTo(40)
+            make.height.equalTo(60)
         }
         
         // Description label

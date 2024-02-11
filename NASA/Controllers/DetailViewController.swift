@@ -11,8 +11,11 @@ import SnapKit
 final class DetailViewController: UIViewController {
     
     //MARK: - Properties
-    
-    private var textForLabel = MokData()
+
+    var copyrightTitle = ""
+    var headTitle = ""
+    var descriptionTitle = ""
+    var dayImage = UIImage()
     
     //MARK: - User interface elements
     
@@ -42,6 +45,11 @@ final class DetailViewController: UIViewController {
     //MARK: - Private
     /// Setup user elements in self view
     private func setupView() {
+        // Setup navigation items
+        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTapped))
+        backButton.tintColor = .white
+        navigationItem.leftBarButtonItem = backButton
+        
         // Setup view's
         view.addSubviews(verticalScroll)
         verticalScroll.addSubviews(contentView)
@@ -56,6 +64,12 @@ final class DetailViewController: UIViewController {
         detailTableView.delegate = self
         detailTableView.dataSource = self
     }
+    
+    //MARK: - Objective - C method
+    
+    @objc func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 //MARK: - Extension
@@ -68,7 +82,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = detailTableView.dequeueReusableCell(withIdentifier: "DetailTableCell", for: indexPath) as! DetailTableViewCell
-        cell.setupDataForCell(with: textForLabel)
+        cell.setupDataForCell(author: copyrightTitle, head: headTitle, description: descriptionTitle, image: dayImage)
         return cell
     }
     

@@ -52,13 +52,11 @@ class DayPictureViewController: UIViewController {
         super.viewDidLoad()
         
         // Call method's
+        DispatchQueue.main.async {
+            self.fetchData()
+        }
         setupView()
         setupConstraints()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        fetchData()
     }
     
     //MARK: - Private methods
@@ -110,37 +108,45 @@ extension DayPictureViewController: NetworkManagerDelegate {
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return max(0, pictureArr.count - 1)
+        return pictureArr.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = pictureCollectionView.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
         cell.layer.cornerRadius = cell.frame.size.width / 9
         cell.clipsToBounds = true
-        let data = pictureArr[indexPath.item + 1]
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 5) { [self] in
+        
+        let data = pictureArr[indexPath.item]
         if let hdurl = data.hdurl, let image = cache.getImage(for: hdurl as NSString) {
-            DispatchQueue.main.async {
-                cell.setupPictureCollectionCell(with: data, with: image)
-            }
+            cell.setupPictureCollectionCell(with: data, with: image)
         } else {
-            DispatchQueue.global(qos: .background).async { [self] in
-                if let hdurl = data.hdurl, let imageUrl = URL(string: hdurl) {
-                    networkManager.fetchImage(withURL: imageUrl) { result in
-                        switch result {
-                        case .success(let image):
-                            DispatchQueue.main.async {
-                                cell.setupPictureCollectionCell(with: data, with: image)
-                            }
-                        case .failure(let failure):
-                            print(failure)
+            if let hdurl = data.hdurl, let imageUrl = URL(string: hdurl) {
+                networkManager.fetchImage(withURL: imageUrl) { result in
+                    switch result {
+                    case .success(let image):
+                        DispatchQueue.main.async {
+                            cell.setupPictureCollectionCell(with: data, with: image)
                         }
+                    case .failure(let failure):
+                        print(failure)
                     }
                 }
             }
         }
-    }
         return cell
+    }
+
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let copyrightLabel = pictureArr[indexPath.item].copyright, let titleLabel = pictureArr[indexPath.item].title, let explanationLabel = pictureArr[indexPath.item].explanation, let image = cache.getImage(for: pictureArr[indexPath.item].hdurl! as NSString) else { return }
+        
+        let detailVC = DetailViewController()
+            detailVC.copyrightTitle = copyrightLabel
+            detailVC.headTitle = titleLabel
+            detailVC.descriptionTitle = explanationLabel
+            detailVC.dayImage = image
+            
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
