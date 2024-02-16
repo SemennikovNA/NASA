@@ -78,7 +78,7 @@ class DayPictureViewController: UIViewController {
     }
     
     private func fetchData() {
-        networkManager.fetchData(count: 20) { result in
+        networkManager.fetchData(count: 11) { result in
             switch result {
             case .success(let data):
                 print(data)
@@ -102,6 +102,27 @@ extension DayPictureViewController: NetworkManagerDelegate {
     }
 }
 
+//MARK: UIScrollViewDelegate methods
+
+extension DayPictureViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let downloadPosition = scrollView.contentOffset.y
+        if downloadPosition > (pictureCollectionView.contentSize.height - 100 - scrollView.frame.size.height) {
+            networkManager.fetchData(count: 10) { result in
+                switch result {
+                case .success(let data):
+                    self.pictureArr.append(data)
+                    DispatchQueue.main.async {
+                        self.pictureCollectionView.reloadData()
+                    }
+                case .failure(let failure):
+                    print("Ошибка \(failure)")
+                }
+            }
+        }
+    }
+}
 
 //MARK: UICollectionViewDelegates methods
 
