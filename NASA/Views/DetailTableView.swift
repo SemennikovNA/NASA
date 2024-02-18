@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailTableView: UITableView {
+class DetailTableView: UITableView, UITableViewDelegate {
     
     //MARK: - Initialize
     
@@ -24,6 +24,7 @@ class DetailTableView: UITableView {
     }
     
     private func setupDetailTable() {
+        delegate = self
         self.backgroundColor = .black
         register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.reuseIdentifier)
     }

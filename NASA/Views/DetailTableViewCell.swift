@@ -17,7 +17,7 @@ class DetailTableViewCell: UITableViewCell {
     //MARK: - User interface elements
     
     private lazy var contentCellView = UIView()
-    private lazy var dayImage: UIImageView = {
+    let dayImage: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleToFill
         return image
@@ -60,15 +60,25 @@ class DetailTableViewCell: UITableViewCell {
     private func setupContraints() {
         // Content cell view
         contentCellView.snp.makeConstraints { make in
-            make.edges.equalTo(contentView)
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
+        NSLayoutConstraint.activate([
+            dayImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            dayImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            dayImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            dayImage.heightAnchor.constraint(equalToConstant: 350)
+        ])
+        
         // Day image
-        dayImage.snp.makeConstraints { make in
-            make.top.equalTo(contentView.snp.top)
-            make.leading.trailing.equalTo(contentCellView)
-            make.height.equalTo(300)
-        }
+//        dayImage.snp.makeConstraints { make in
+//            make.top.equalTo(contentView)
+//            make.leading.trailing.equalTo(contentView)
+//            make.height.equalTo(350)
+//        }
         
         // Author lable
         authorLabel.snp.makeConstraints { make in

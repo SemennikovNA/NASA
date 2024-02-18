@@ -42,6 +42,8 @@ final class DetailViewController: UIViewController {
         setupConstraints()
     }
     
+    
+    
     //MARK: - Private
     /// Setup user elements in self view
     private func setupView() {
@@ -61,6 +63,7 @@ final class DetailViewController: UIViewController {
     
     /// Method for signature delegates
     private func signatureDelegates() {
+        verticalScroll.delegate = self
         detailTableView.delegate = self
         detailTableView.dataSource = self
     }
@@ -73,6 +76,23 @@ final class DetailViewController: UIViewController {
 }
 
 //MARK: - Extension
+
+extension DetailViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        for cell in detailTableView.visibleCells {
+            if let pictureCell = cell as? DetailTableViewCell {
+                let yOffset = scrollView.contentOffset.y
+                let newHeight = max(-yOffset, 0) // Новая высота изображения, основанная на прокрутке
+                pictureCell.dayImage.frame.size.height = newHeight
+                detailTableView.beginUpdates()
+                detailTableView.endUpdates()
+            }
+        }
+    }
+}
+
+
 //MARK: UITableViewDelegates methods
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -85,7 +105,6 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
         cell.setupDataForCell(author: copyrightTitle, head: headTitle, description: descriptionTitle, image: dayImage)
         return cell
     }
-    
 }
 
 //MARK: - Private extension
