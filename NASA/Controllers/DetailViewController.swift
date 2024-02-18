@@ -61,6 +61,8 @@ final class DetailViewController: UIViewController {
         // Setup image
         detailImage.detailImage.image = dayImage
         
+        // Setup vertical scroll
+        verticalScroll.contentInset = UIEdgeInsets(top: -100, left: 0, bottom: 0, right: 0)
         
         // Signature delegate
         signatureDelegates()
@@ -85,7 +87,14 @@ final class DetailViewController: UIViewController {
 extension DetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let yOffset = scrollView.contentOffset.y
+        let imageViewHeight = max(600 - yOffset, 0)
+        let offset: CGFloat = 20
+        detailImage.snp.updateConstraints { make in
+            make.height.equalTo(imageViewHeight + offset)
+        }
     }
+
 }
 
 
@@ -116,14 +125,14 @@ private extension DetailViewController {
         // Content view
         contentView.snp.makeConstraints { make in
             make.center.equalTo(verticalScroll)
-            make.top.equalTo(verticalScroll).inset(-100)
+            make.top.equalTo(verticalScroll).inset(-200)
             make.leading.trailing.bottom.equalTo(verticalScroll)
             make.width.equalTo(verticalScroll.snp.width)
         }
         // Detail image view
         detailImage.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(contentView)
-            make.height.equalTo(400)
+            make.height.equalTo(950)
         }
         // Detail table
         detailTableView.snp.makeConstraints { make in
