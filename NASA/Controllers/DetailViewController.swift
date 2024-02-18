@@ -11,7 +11,7 @@ import SnapKit
 final class DetailViewController: UIViewController {
     
     //MARK: - Properties
-
+    
     var copyrightTitle = ""
     var headTitle = ""
     var descriptionTitle = ""
@@ -30,6 +30,7 @@ final class DetailViewController: UIViewController {
         let view = UIView()
         return view
     }()
+    private var detailImage = DetailImageView()
     private var detailTableView = DetailTableView()
     
     //MARK: - Life cycle
@@ -55,7 +56,11 @@ final class DetailViewController: UIViewController {
         // Setup view's
         view.addSubviews(verticalScroll)
         verticalScroll.addSubviews(contentView)
-        contentView.addSubviews(detailTableView)
+        contentView.addSubviews(detailImage, detailTableView)
+        
+        // Setup image
+        detailImage.detailImage.image = dayImage
+        
         
         // Signature delegate
         signatureDelegates()
@@ -80,15 +85,6 @@ final class DetailViewController: UIViewController {
 extension DetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        for cell in detailTableView.visibleCells {
-            if let pictureCell = cell as? DetailTableViewCell {
-                let yOffset = scrollView.contentOffset.y
-                let newHeight = max(-yOffset, 0) // Новая высота изображения, основанная на прокрутке
-                pictureCell.dayImage.frame.size.height = newHeight
-                detailTableView.beginUpdates()
-                detailTableView.endUpdates()
-            }
-        }
     }
 }
 
@@ -115,19 +111,24 @@ private extension DetailViewController {
     func setupConstraints() {
         // Vertical scroll
         verticalScroll.snp.makeConstraints { make in
-            make.top.leading.bottom.trailing.equalTo(view)
+            make.top.leading.bottom.trailing.equalToSuperview()
         }
         // Content view
         contentView.snp.makeConstraints { make in
             make.center.equalTo(verticalScroll)
-            make.top.equalTo(verticalScroll).inset(-60)
+            make.top.equalTo(verticalScroll).inset(-100)
             make.leading.trailing.bottom.equalTo(verticalScroll)
             make.width.equalTo(verticalScroll.snp.width)
         }
+        // Detail image view
+        detailImage.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(contentView)
+            make.height.equalTo(400)
+        }
         // Detail table
         detailTableView.snp.makeConstraints { make in
-            make.top.leading.bottom.trailing.equalTo(contentView)
-            make.height.equalTo(contentView.snp.height)
+            make.top.equalTo(detailImage.snp.bottom)
+            make.leading.trailing.bottom.equalTo(contentView)
         }
     }
 }

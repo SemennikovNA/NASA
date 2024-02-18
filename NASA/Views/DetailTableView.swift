@@ -24,8 +24,8 @@ class DetailTableView: UITableView, UITableViewDelegate {
     }
     
     private func setupDetailTable() {
-        delegate = self
         self.backgroundColor = .black
+        self.isScrollEnabled = false
         register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.reuseIdentifier)
     }
 }

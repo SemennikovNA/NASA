@@ -17,11 +17,6 @@ class DetailTableViewCell: UITableViewCell {
     //MARK: - User interface elements
     
     private lazy var contentCellView = UIView()
-    let dayImage: UIImageView = {
-        let image = UIImageView()
-        image.contentMode = .scaleToFill
-        return image
-    }()
     private lazy var authorLabel = UILabel(font: .systemFont(ofSize: 17), textColor: .gray)
     private lazy var headLabel = UILabel(font: .systemFont(ofSize: 20), textColor: .white)
     private lazy var descriptionLabel = UILabel(font: .systemFont(ofSize: 17), numberOfLines: 0, textColor: .white)
@@ -46,7 +41,6 @@ class DetailTableViewCell: UITableViewCell {
         authorLabel.text = author
         headLabel.text = head
         descriptionLabel.text = description
-        dayImage.image = image
     }
     
     //MARK: - Private method
@@ -54,7 +48,7 @@ class DetailTableViewCell: UITableViewCell {
     private func setupCell() {
         contentCellView.backgroundColor = .black
         contentView.addSubviews(contentCellView)
-        contentCellView.addSubviews(dayImage, authorLabel, headLabel, descriptionLabel)
+        contentCellView.addSubviews(authorLabel, headLabel, descriptionLabel)
     }
     
     private func setupContraints() {
@@ -65,41 +59,23 @@ class DetailTableViewCell: UITableViewCell {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-        
-        NSLayoutConstraint.activate([
-            dayImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-            dayImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            dayImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            dayImage.heightAnchor.constraint(equalToConstant: 350)
-        ])
-        
-        // Day image
-//        dayImage.snp.makeConstraints { make in
-//            make.top.equalTo(contentView)
-//            make.leading.trailing.equalTo(contentView)
-//            make.height.equalTo(350)
-//        }
-        
         // Author lable
         authorLabel.snp.makeConstraints { make in
-            make.top.equalTo(dayImage.snp_bottomMargin).offset(20)
+            make.top.equalTo(contentCellView.snp_topMargin).offset(10)
             make.leading.trailing.equalTo(contentCellView).inset(20)
-            make.height.equalTo(35)
+            make.height.equalTo(30)
         }
-        
         // Head label
         headLabel.snp.makeConstraints { make in
             make.top.equalTo(authorLabel.snp_bottomMargin).offset(10)
             make.leading.trailing.equalTo(contentCellView).inset(20)
-            make.height.equalTo(60)
+            make.height.equalTo(50)
         }
-        
         // Description label
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(headLabel.snp_bottomMargin).offset(15)
+            make.top.equalTo(headLabel.snp_bottomMargin).offset(10)
             make.leading.trailing.bottom.equalTo(contentCellView).inset(20)
             
         }
     }
-    
 }
