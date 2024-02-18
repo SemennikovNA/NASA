@@ -93,8 +93,20 @@ extension DetailViewController: UIScrollViewDelegate {
         detailImage.snp.updateConstraints { make in
             make.height.equalTo(imageViewHeight + offset)
         }
+        
+        let threshold: CGFloat = 170
+        
+        if scrollView.contentOffset.y > threshold {
+            navigationController?.navigationBar.isTranslucent = false
+            navigationController?.navigationBar.barTintColor = .black
+            navigationItem.title = self.headTitle
+        } else {
+            navigationController?.navigationBar.isTranslucent = true
+            navigationController?.navigationBar.barTintColor = .clear
+            navigationItem.title = nil
+        }
     }
-
+    
 }
 
 
