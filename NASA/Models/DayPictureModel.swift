@@ -10,8 +10,8 @@ import Foundation
 struct DayPictureModel: Decodable {
     
     let copyright: String?
-    let explanation: String?
-    let hdurl: String?
-    let title: String?
+    let explanation: String
+    let hdurl: String
+    let title: String
     
 }

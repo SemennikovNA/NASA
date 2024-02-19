@@ -138,37 +138,51 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         cell.clipsToBounds = true
         
         let data = pictureArr[indexPath.item]
-        if let hdurl = data.hdurl, let image = cache.getImage(for: hdurl as NSString) {
+        let hdurl = data.hdurl
+        
+        if let image = cache.getImage(for: hdurl as NSString) {
             cell.setupPictureCollectionCell(with: data, with: image)
-        } else {
-            if let hdurl = data.hdurl, let imageUrl = URL(string: hdurl) {
-                networkManager.fetchImage(withURL: imageUrl) { result in
-                    switch result {
-                    case .success(let image):
-                        DispatchQueue.main.async {
-                            cell.setupPictureCollectionCell(with: data, with: image)
-                        }
-                    case .failure(let failure):
-                        print(failure)
+        } else if let imageUrl = URL(string: hdurl) {
+            networkManager.fetchImage(withURL: imageUrl) { result in
+                switch result {
+                case .success(let image):
+                    DispatchQueue.main.async {
+                        cell.setupPictureCollectionCell(with: data, with: image)
                     }
+                case .failure(let failure):
+                    print(failure)
                 }
             }
         }
         return cell
     }
 
+
+
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let copyrightLabel = pictureArr[indexPath.item].copyright, let titleLabel = pictureArr[indexPath.item].title, let explanationLabel = pictureArr[indexPath.item].explanation, let image = cache.getImage(for: pictureArr[indexPath.item].hdurl! as NSString) else { return }
-    
+        guard indexPath.item < pictureArr.count else {
+            print("Ошибка: Некорректный индекс ячейки")
+            return
+        }
+        
+        let pictureData = pictureArr[indexPath.item]
+        let hdurl = pictureData.hdurl
+        let image = cache.getImage(for: hdurl as NSString)
+        let copyrightLabel = pictureData.copyright ?? ""
+        let titleLabel = pictureData.title
+        let explanationLabel = pictureData.explanation
+      
+        
         let detailVC = DetailViewController()
-            detailVC.copyrightTitle = copyrightLabel
-            detailVC.headTitle = titleLabel
-            detailVC.descriptionTitle = explanationLabel
-            detailVC.dayImage = image
+        detailVC.copyrightTitle = copyrightLabel
+        detailVC.headTitle = titleLabel
+        detailVC.descriptionTitle = explanationLabel
+        detailVC.dayImage = image!
         
         navigationController?.pushViewController(detailVC, animated: true)
     }
+
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let sizeCell = CGSize(width: 170, height: 200)
