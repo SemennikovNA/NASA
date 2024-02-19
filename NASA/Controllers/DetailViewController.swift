@@ -83,32 +83,34 @@ final class DetailViewController: UIViewController {
 }
 
 //MARK: - Extension
-
+//MARK: UIScrollViewDelegate methods
 extension DetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        zoomImageWhenScrolling(scrollView)
+        transitTitleToNavigationBar(indentation: 200, uiElement: scrollView)
+    }
+    
+    private func zoomImageWhenScrolling(_ scrollView: UIScrollView) {
         let yOffset = scrollView.contentOffset.y
         let imageViewHeight = max(600 - yOffset, 0)
         let offset: CGFloat = 20
         detailImage.snp.updateConstraints { make in
             make.height.equalTo(imageViewHeight + offset)
         }
-        
-        let threshold: CGFloat = 170
-        
-        if scrollView.contentOffset.y > threshold {
-            navigationController?.navigationBar.isTranslucent = false
-            navigationController?.navigationBar.barTintColor = .black
-            navigationItem.title = self.headTitle
-        } else {
-            navigationController?.navigationBar.isTranslucent = true
-            navigationController?.navigationBar.barTintColor = .clear
-            navigationItem.title = nil
-        }
     }
     
+    private func transitTitleToNavigationBar(indentation: CGFloat, uiElement: UIScrollView) {
+        let indentation = indentation
+        if uiElement.contentOffset.y > indentation {
+            navigationItem.title = self.headTitle
+            navigationController?.navigationBar.isTranslucent = false
+        } else {
+            navigationItem.title = nil
+            navigationController?.navigationBar.isTranslucent = true
+        }
+    }
 }
-
 
 //MARK: UITableViewDelegates methods
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
@@ -144,7 +146,7 @@ private extension DetailViewController {
         // Detail image view
         detailImage.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(contentView)
-            make.height.equalTo(950)
+            make.height.equalTo(400)
         }
         // Detail table
         detailTableView.snp.makeConstraints { make in

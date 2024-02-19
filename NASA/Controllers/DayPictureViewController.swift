@@ -160,18 +160,18 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let copyrightLabel = pictureArr[indexPath.item].copyright, let titleLabel = pictureArr[indexPath.item].title, let explanationLabel = pictureArr[indexPath.item].explanation, let image = cache.getImage(for: pictureArr[indexPath.item].hdurl! as NSString) else { return }
-        
+    
         let detailVC = DetailViewController()
             detailVC.copyrightTitle = copyrightLabel
             detailVC.headTitle = titleLabel
             detailVC.descriptionTitle = explanationLabel
             detailVC.dayImage = image
-            
+        
         navigationController?.pushViewController(detailVC, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let sizeCell = CGSize(width: 190, height: 200)
+        let sizeCell = CGSize(width: 170, height: 200)
         return sizeCell
     }
     
