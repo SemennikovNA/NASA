@@ -115,7 +115,6 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
 //MARK: - Private extension
 
 private extension SearchViewController {
-    
      /// Setup constraints for search view controller
     func setupConstraints() {
         searchCollection.snp.makeConstraints { make in

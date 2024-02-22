@@ -28,19 +28,31 @@ class NetworkManager {
     private init(){}
     
     //MARK: - Method
-    
-    func createURL(count: Int) -> URL? {
+    /// Create url depending on parameters
+    func createURL(search: Bool = false, searchString: String = "", count: Int) -> URL? {
         let tunnel = "https://"
-        let url = "api.nasa.gov/planetary/apod?"
+        let url = "api.nasa.gov"
+        let dayPic = "/planetary/apod?"
         let countItem = "count=\(count)"
         let key = "&api_key=\(self.apiKey)"
-        let string = tunnel + url + countItem + key
-        let urlString = URL(string: string)
-        return urlString
+        let searchUrl = "images-"
+        let searchKey = "/search?"
+        let searchParameters = "q="
+        
+        switch search {
+        case true:
+            let searchPic = tunnel + searchUrl + url + searchKey + searchParameters + searchString
+            let searchPicUrl = URL(string: searchPic)
+            return searchPicUrl
+        case false:
+            let dayPic = tunnel + url + dayPic + countItem + key
+            let urlDayPic = URL(string: dayPic)
+            return urlDayPic
+        }
     }
     
     //MARK: - Private method
-    
+    /// Fetch data for day picture url
     func fetchData(count: Int, complition: @escaping (Result<DayPictureModel, Error>) -> ()) {
         guard let url = createURL(count: count) else {
             complition(.failure(NetworkError.badUrl))
@@ -64,6 +76,7 @@ class NetworkManager {
         }.resume()
     }
     
+    /// Fetch data if image not in cache
     func fetchImage(withURL url: URL, completion: @escaping (Result<UIImage, Error>) -> ()) {
         if let cachedImage = ImageCache.shared.getImage(for: url.absoluteString as NSString) {
                 completion(.success(cachedImage))
@@ -87,7 +100,6 @@ class NetworkManager {
             }.resume()
         }
 }
-
 
 enum NetworkError: Error {
     
