@@ -23,6 +23,7 @@ final class DetailViewController: UIViewController {
         let scroll = UIScrollView()
         scroll.bounces = true
         scroll.alwaysBounceVertical = true
+        scroll.contentInset = UIEdgeInsets(top: -100, left: 0, bottom: 0, right: 0)
         scroll.showsVerticalScrollIndicator = false
         return scroll
     }()
@@ -43,8 +44,6 @@ final class DetailViewController: UIViewController {
         setupConstraints()
     }
     
-    
-    
     //MARK: - Private
     /// Setup user elements in self view
     private func setupView() {
@@ -61,13 +60,9 @@ final class DetailViewController: UIViewController {
         // Setup image
         detailImage.detailImage.image = dayImage
         
-        // Setup vertical scroll
-        verticalScroll.contentInset = UIEdgeInsets(top: -100, left: 0, bottom: 0, right: 0)
-        
         // Signature delegate
         signatureDelegates()
     }
-    
     /// Method for signature delegates
     private func signatureDelegates() {
         verticalScroll.delegate = self
@@ -88,18 +83,20 @@ extension DetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         zoomImageWhenScrolling(scrollView)
-        transitTitleToNavigationBar(indentation: 200, uiElement: scrollView)
+        transitTitleToNavigationBar(indentation: 170, uiElement: scrollView)
     }
     
+    /// Calculation of image size when scrolling
     private func zoomImageWhenScrolling(_ scrollView: UIScrollView) {
         let yOffset = scrollView.contentOffset.y
         let imageViewHeight = max(600 - yOffset, 0)
-        let offset: CGFloat = 20
+        let offset: CGFloat = 10
         detailImage.snp.updateConstraints { make in
             make.height.equalTo(imageViewHeight + offset)
         }
     }
     
+    /// Setup label in navigation bar when scrolling
     private func transitTitleToNavigationBar(indentation: CGFloat, uiElement: UIScrollView) {
         let indentation = indentation
         if uiElement.contentOffset.y > indentation {

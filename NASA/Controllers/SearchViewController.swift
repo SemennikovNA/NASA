@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SearchViewController: UIViewController, UISearchControllerDelegate, UISearchBarDelegate {
+final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     //MARK: - Properties
      
@@ -44,6 +44,8 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate, 
     private func signatureDelegates() {
         searchCollection.delegate = self
         searchCollection.dataSource = self
+        searchController.delegate = self
+        searchController.searchBar.delegate = self
     }
     
     /// Setup search bar in
@@ -94,7 +96,16 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 
 //MARK: UISearchResultsUpdating
 
-extension SearchViewController: UISearchResultsUpdating {
+extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    
+    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        true
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let text = searchBar.text else { return }
+        print(text)
+    }
     
     func updateSearchResults(for searchController: UISearchController) {
         

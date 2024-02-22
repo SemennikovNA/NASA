@@ -125,7 +125,6 @@ extension DayPictureViewController: NetworkManagerDelegate {
 //}
 
 //MARK: UICollectionViewDelegates methods
-
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -157,23 +156,13 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         return cell
     }
 
-
-
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.item < pictureArr.count else {
-            print("Ошибка: Некорректный индекс ячейки")
-            return
-        }
-        
         let pictureData = pictureArr[indexPath.item]
-        let hdurl = pictureData.hdurl
+        let hdurl = pictureData.hdurl 
         let image = cache.getImage(for: hdurl as NSString)
         let copyrightLabel = pictureData.copyright ?? ""
         let titleLabel = pictureData.title
         let explanationLabel = pictureData.explanation
-      
-        
         let detailVC = DetailViewController()
         detailVC.copyrightTitle = copyrightLabel
         detailVC.headTitle = titleLabel

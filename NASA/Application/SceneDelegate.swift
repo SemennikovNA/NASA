@@ -46,8 +46,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationController.navigationBar.standardAppearance = appearance
         navigationController.navigationBar.compactAppearance = appearance
         navigationController.navigationBar.scrollEdgeAppearance = appearance
-        navigationController.navigationBar.tintColor = .black
-        navigationController.navigationBar.barTintColor = .black
+        navigationController.navigationBar.tintColor = .white
+        navigationController.navigationBar.barTintColor = .white
         return navigationController
     }
     
