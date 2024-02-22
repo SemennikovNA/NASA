@@ -74,7 +74,7 @@ class DayPictureViewController: UIViewController {
     private func signatureDelegates() {
         pictureCollectionView.delegate = self
         pictureCollectionView.dataSource = self
-        networkManager.delegate = self
+        networkManager.dayPictureDelegate = self
     }
     
     private func fetchData() {
@@ -91,7 +91,7 @@ class DayPictureViewController: UIViewController {
 
 //MARK: - Extension
 
-extension DayPictureViewController: NetworkManagerDelegate {
+extension DayPictureViewController: DayPictureDataDelegate {
     
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel]) {
         self.pictureArr = model
@@ -140,13 +140,13 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         let hdurl = data.hdurl
         
         if let image = cache.getImage(for: hdurl as NSString) {
-            cell.setupPictureCollectionCell(with: data, with: image)
+            cell.setupPictureCollectionCell(with: data, image: image)
         } else if let imageUrl = URL(string: hdurl) {
             networkManager.fetchImage(withURL: imageUrl) { result in
                 switch result {
                 case .success(let image):
                     DispatchQueue.main.async {
-                        cell.setupPictureCollectionCell(with: data, with: image)
+                        cell.setupPictureCollectionCell(with: data, image: image)
                     }
                 case .failure(let failure):
                     print(failure)

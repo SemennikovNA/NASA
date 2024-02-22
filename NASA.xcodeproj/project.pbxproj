@@ -31,6 +31,7 @@
 		1E9DCA562B77761600834947 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA552B77761600834947 /* NetworkManager.swift */; };
 		1E9DCA582B77C27000834947 /* DayPictureModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA572B77C27000834947 /* DayPictureModel.swift */; };
 		1E9DCA5A2B77DFDD00834947 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA592B77DFDD00834947 /* ImageCache.swift */; };
+		1EC9110B2B87A97700F3E775 /* SearchPictureModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC9110A2B87A97700F3E775 /* SearchPictureModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		1E9DCA552B77761600834947 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		1E9DCA572B77C27000834947 /* DayPictureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPictureModel.swift; sourceTree = "<group>"; };
 		1E9DCA592B77DFDD00834947 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		1EC9110A2B87A97700F3E775 /* SearchPictureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPictureModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 			children = (
 				1E9DCA322B72884A00834947 /* MokData.swift */,
 				1E9DCA572B77C27000834947 /* DayPictureModel.swift */,
+				1EC9110A2B87A97700F3E775 /* SearchPictureModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				1E9DCA482B75122A00834947 /* PictureCollectionViewCell.swift in Sources */,
 				1E9DCA332B72884A00834947 /* MokData.swift in Sources */,
 				1E9DCA072B725DE400834947 /* AppDelegate.swift in Sources */,
+				1EC9110B2B87A97700F3E775 /* SearchPictureModel.swift in Sources */,
 				1E9DCA2D2B72763C00834947 /* UIView - Extension.swift in Sources */,
 				1E9DCA202B72610300834947 /* DayPictureViewController.swift in Sources */,
 				1E9DCA092B725DE400834947 /* SceneDelegate.swift in Sources */,

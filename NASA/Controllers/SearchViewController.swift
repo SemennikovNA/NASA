@@ -10,13 +10,33 @@ import UIKit
 final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     //MARK: - Properties
-     
+    
+    var cache = ImageCache.shared
+    var networkManager = NetworkManager.shared
     var mokData = MokData()
+    var searchResult: [SearchPictureModel] {
+        didSet {
+            DispatchQueue.main.async {
+                self.searchCollection.reloadData()
+            }
+        }
+    }
     
     //MARK: - User interface elements
     
     private var searchController = UISearchController(searchResultsController: nil)
     private let searchCollection = PictureCollectionView()
+    
+    //MARK: - Initialize
+    
+    init() {
+        self.searchResult = []
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Life cycle
     
@@ -46,6 +66,7 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
         searchCollection.dataSource = self
         searchController.delegate = self
         searchController.searchBar.delegate = self
+        networkManager.searchResultDelegate = self
     }
     
     /// Setup search bar in
@@ -71,14 +92,31 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return searchResult.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = searchCollection.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
-//        cell.setupPictureCollectionCell(with: )
+        let cellData = searchResult[indexPath.item]
+        let imageUrl = searchResult[indexPath.item].collection.items[indexPath.item].links[indexPath.item].href
         cell.layer.cornerRadius = cell.frame.size.width / 15
         cell.clipsToBounds = true
+        
+        if let image = cache.getImage(for: imageUrl as NSString) {
+            cell.setupSearchDataCollectionCell(with: cellData, image: image, index: cellData)
+        } else if let imageUrl = URL(string: imageUrl) {
+            networkManager.fetchImage(withURL: imageUrl) { result in
+                switch result {
+                case .success(let image):
+                    DispatchQueue.main.async {
+                        cell.setupPictureCollectionCell(with: data, image: image)
+                    }
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+        }
+        
         return cell
     }
     
@@ -104,11 +142,26 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text else { return }
-        print(text)
+        guard let url = networkManager.createURL(search: true, searchString: text, count: 10) else { return }
+        print(url)
     }
     
     func updateSearchResults(for searchController: UISearchController) {
         
+    }
+}
+
+//MARK: - Extension
+//MARK: SearchResultUpdateDelegate
+
+extension SearchViewController: SearchResultDataDelegate {
+    
+    func didUpdateSearchResult(_ networkManager: NetworkManager, model: [SearchPictureModel]) {
+        self.searchResult = model
+    }
+    
+    func didFailWithError(_ error: Error) {
+        print(error.localizedDescription)
     }
 }
 

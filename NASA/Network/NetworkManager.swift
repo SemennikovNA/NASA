@@ -7,8 +7,13 @@
 
 import UIKit
 
-protocol NetworkManagerDelegate {
+protocol DayPictureDataDelegate {
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
+    func didFailWithError(_ error: Error)
+}
+
+protocol SearchResultDataDelegate {
+    func didUpdateSearchResult(_ networkManager: NetworkManager, model: [SearchPictureModel])
     func didFailWithError(_ error: Error)
 }
 
@@ -20,8 +25,8 @@ class NetworkManager {
     private let decoder = JSONDecoder()
     private let session = URLSession(configuration: .default)
     private let apiKey = "UU3VJDZp0yuGErh0Qc2H5Xrj9AvbjRlt9tjDUS44"
-    var delegate: NetworkManagerDelegate?
-    
+    var dayPictureDelegate: DayPictureDataDelegate?
+    var searchResultDelegate: SearchResultDataDelegate?
     
     //MARK: - Initialize
     
@@ -68,12 +73,36 @@ class NetworkManager {
             }
             do {
                 let nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
-                self.delegate?.didUpdateDayPicture(self, model: nasaData)
+                self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
             } catch {
                 complition(.failure(error))
             }
             
         }.resume()
+    }
+    
+    ///
+    func fetchSearchResult(url: URL?, complition: @escaping (Result<SearchPictureModel, Error>) -> ()) {
+        guard let url = url else {
+            complition(.failure(NetworkError.badUrl))
+            return
+        }
+        
+        session.dataTask(with: url) { data, response, error in
+            guard let data else {
+                if let error = error {
+                    complition(.failure(error))
+                    return
+                }
+                return
+            }
+            do {
+                let searchData = try self.decoder.decode([SearchPictureModel].self, from: data)
+                self.searchResultDelegate?.didUpdateSearchResult(self, model: searchData)
+            } catch {
+                complition(.failure(error))
+            }
+        }
     }
     
     /// Fetch data if image not in cache
