@@ -13,7 +13,7 @@ protocol DayPictureDataDelegate {
 }
 
 protocol SearchResultDataDelegate {
-    func didUpdateSearchResult(_ networkManager: NetworkManager, model: [SearchPictureModel])
+    func didUpdateSearchResult(_ networkManager: NetworkManager, model: Search)
     func didFailWithError(_ error: Error)
 }
 
@@ -58,16 +58,16 @@ class NetworkManager {
     
     //MARK: - Private method
     /// Fetch data for day picture url
-    func fetchData(count: Int, complition: @escaping (Result<DayPictureModel, Error>) -> ()) {
+    func fetchData(count: Int, completion: @escaping (Result<DayPictureModel, Error>) -> ()) {
         guard let url = createURL(count: count) else {
-            complition(.failure(NetworkError.badUrl))
+            completion(.failure(NetworkError.badUrl))
             return
         }
         
         session.dataTask(with: url) { data, response, error in
             guard let data else {
                 if let error {
-                    complition(.failure(error))
+                    completion(.failure(error))
                 }
                 return
             }
@@ -75,34 +75,41 @@ class NetworkManager {
                 let nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
                 self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
             } catch {
-                complition(.failure(error))
+                completion(.failure(error))
             }
             
         }.resume()
     }
     
     ///
-    func fetchSearchResult(url: URL?, complition: @escaping (Result<SearchPictureModel, Error>) -> ()) {
+    func fetchSearchResult(url: URL?, completion: @escaping (Result<Search, Error>) -> ()) {
         guard let url = url else {
-            complition(.failure(NetworkError.badUrl))
+            completion(.failure(NetworkError.badUrl))
             return
         }
         
         session.dataTask(with: url) { data, response, error in
-            guard let data else {
+            guard let data = data else {
+                guard let response = response else { return }
+                print("хуй\(response)")
                 if let error = error {
-                    complition(.failure(error))
-                    return
+                    completion(.failure(error))
+                } else {
+                    let error = NetworkError.badResponse
+                    completion(.failure(error))
                 }
                 return
             }
             do {
-                let searchData = try self.decoder.decode([SearchPictureModel].self, from: data)
+                print(data, response)
+                let searchData = try self.decoder.decode(Search.self, from: data)
+                let searchResult = searchData.collection.items[0].data[0].title
+                print(searchResult)
                 self.searchResultDelegate?.didUpdateSearchResult(self, model: searchData)
             } catch {
-                complition(.failure(error))
+                print("Ошибка декодирования JSON: \(error)")
             }
-        }
+        }.resume()
     }
     
     /// Fetch data if image not in cache

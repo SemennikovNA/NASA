@@ -14,7 +14,7 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     var cache = ImageCache.shared
     var networkManager = NetworkManager.shared
     var mokData = MokData()
-    var searchResult: [SearchPictureModel] {
+    var searchResult: [Search] {
         didSet {
             DispatchQueue.main.async {
                 self.searchCollection.reloadData()
@@ -86,6 +86,18 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
 }
 
 //MARK: - Extension
+//MARK: SearchResultUpdateDelegate
+
+extension SearchViewController: SearchResultDataDelegate {
+    
+    func didUpdateSearchResult(_ networkManager: NetworkManager, model: Search) {
+        self.searchResult.append(model)
+    }
+    
+    func didFailWithError(_ error: Error) {
+        print(error.localizedDescription)
+    }
+}
 
 //MARK: UICollectionViewDelegates
 
@@ -97,25 +109,23 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = searchCollection.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
-        let cellData = searchResult[indexPath.item]
-        let imageUrl = searchResult[indexPath.item].collection.items[indexPath.item].links[indexPath.item].href
         cell.layer.cornerRadius = cell.frame.size.width / 15
         cell.clipsToBounds = true
-        
-        if let image = cache.getImage(for: imageUrl as NSString) {
-            cell.setupSearchDataCollectionCell(with: cellData, image: image, index: cellData)
-        } else if let imageUrl = URL(string: imageUrl) {
-            networkManager.fetchImage(withURL: imageUrl) { result in
-                switch result {
-                case .success(let image):
-                    DispatchQueue.main.async {
-                        cell.setupPictureCollectionCell(with: data, image: image)
-                    }
-                case .failure(let failure):
-                    print(failure)
-                }
-            }
-        }
+//        let imageUrlString = searchResult[indexPath.item].collection.items[indexPath.item].links[indexPath.item].href
+//        if let image = cache.getImage(for: imageUrlString as NSString) {
+////            cell.setupSearchDataCollectionCell(with: cellData, image: image, index: indexPath)
+//        } else if let imageUrl = URL(string: imageUrlString) {
+//            networkManager.fetchImage(withURL: imageUrl) { result in
+//                switch result {
+//                case .success(let image):
+//                    DispatchQueue.main.async {
+////                        cell.setupSearchDataCollectionCell(with: cellData, image: image, index: indexPath)
+//                    }
+//                case .failure(let failure):
+//                    print(failure)
+//                }
+//            }
+//        }
         
         return cell
     }
@@ -137,31 +147,24 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
-        true
+        return true
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text else { return }
         guard let url = networkManager.createURL(search: true, searchString: text, count: 10) else { return }
-        print(url)
+        networkManager.fetchSearchResult(url: url) { result in
+            switch result {
+            case .success(let success):
+                print(success)
+            case .failure(let failure):
+                print(failure)
+            }
+        }
     }
-    
+        
     func updateSearchResults(for searchController: UISearchController) {
         
-    }
-}
-
-//MARK: - Extension
-//MARK: SearchResultUpdateDelegate
-
-extension SearchViewController: SearchResultDataDelegate {
-    
-    func didUpdateSearchResult(_ networkManager: NetworkManager, model: [SearchPictureModel]) {
-        self.searchResult = model
-    }
-    
-    func didFailWithError(_ error: Error) {
-        print(error.localizedDescription)
     }
 }
 

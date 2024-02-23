@@ -55,8 +55,8 @@ class PictureCollectionViewCell: UICollectionViewCell {
         activityIndicator.stopAnimating()
     }
     
-    func setupSearchDataCollectionCell(with model: SearchPictureModel, image: UIImage, index: IndexPath) {
-        pictureLabel.text = model.collection.items[index.item].data[index.item].title
+    func setupSearchDataCollectionCell(with model: Search, image: UIImage, index: IndexPath) {
+//        pictureLabel.text = model
         pictureCellView.image = image
         activityIndicator.stopAnimating()
     }

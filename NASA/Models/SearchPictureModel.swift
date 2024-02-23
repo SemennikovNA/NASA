@@ -7,23 +7,29 @@
 
 import Foundation
 
-struct SearchPictureModel: Codable {
+struct Search: Codable {
     let collection: Collection
 }
 
+// MARK: - Collection
 struct Collection: Codable {
-    let items: [Items]
+
+    let items: [Item]
 }
 
-struct Items: Codable {
-    let data: [data]
-    let links: [Links]
+// MARK: - Item
+struct Item: Codable {
+    let data: [Datum]
+    let links: [Link]
 }
 
-struct data: Codable {
+// MARK: - Datum
+struct Datum: Codable {
     let title: String
+    
 }
 
-struct Links: Codable {
+// MARK: - Link
+struct Link: Codable {
     let href: String
 }
