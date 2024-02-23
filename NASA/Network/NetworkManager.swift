@@ -13,7 +13,7 @@ protocol DayPictureDataDelegate {
 }
 
 protocol SearchResultDataDelegate {
-    func didUpdateSearchResult(_ networkManager: NetworkManager, model: Search)
+    func didUpdateSearchResult(_ networkManager: NetworkManager, model: [Item])
     func didFailWithError(_ error: Error)
 }
 
@@ -101,11 +101,9 @@ class NetworkManager {
                 return
             }
             do {
-                print(data, response)
                 let searchData = try self.decoder.decode(Search.self, from: data)
-                let searchResult = searchData.collection.items[0].data[0].title
-                print(searchResult)
-                self.searchResultDelegate?.didUpdateSearchResult(self, model: searchData)
+                let searchResult = searchData.collection.items
+                self.searchResultDelegate?.didUpdateSearchResult(self, model: searchResult)
             } catch {
                 print("Ошибка декодирования JSON: \(error)")
             }

@@ -14,8 +14,9 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     var cache = ImageCache.shared
     var networkManager = NetworkManager.shared
     var mokData = MokData()
-    var searchResult: [Search] {
+    var searchResult: [Item] {
         didSet {
+            print(self.searchResult.count)
             DispatchQueue.main.async {
                 self.searchCollection.reloadData()
             }
@@ -90,8 +91,8 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
 
 extension SearchViewController: SearchResultDataDelegate {
     
-    func didUpdateSearchResult(_ networkManager: NetworkManager, model: Search) {
-        self.searchResult.append(model)
+    func didUpdateSearchResult(_ networkManager: NetworkManager, model: [Item]) {
+        self.searchResult = model
     }
     
     func didFailWithError(_ error: Error) {
@@ -111,21 +112,25 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         let cell = searchCollection.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
         cell.layer.cornerRadius = cell.frame.size.width / 15
         cell.clipsToBounds = true
-//        let imageUrlString = searchResult[indexPath.item].collection.items[indexPath.item].links[indexPath.item].href
-//        if let image = cache.getImage(for: imageUrlString as NSString) {
-////            cell.setupSearchDataCollectionCell(with: cellData, image: image, index: indexPath)
-//        } else if let imageUrl = URL(string: imageUrlString) {
-//            networkManager.fetchImage(withURL: imageUrl) { result in
-//                switch result {
-//                case .success(let image):
-//                    DispatchQueue.main.async {
-////                        cell.setupSearchDataCollectionCell(with: cellData, image: image, index: indexPath)
-//                    }
-//                case .failure(let failure):
-//                    print(failure)
-//                }
-//            }
-//        }
+        
+        let item = searchResult[indexPath.item]
+        
+        if let title = item.data.first?.title, let imageUrlString = item.links.first?.href {
+            if let image = cache.getImage(for: imageUrlString as NSString) {
+                cell.setupSearchDataCollectionCell(with: title, image: image, index: indexPath)
+            } else if let imageUrl = URL(string: imageUrlString) {
+                networkManager.fetchImage(withURL: imageUrl) { result in
+                    switch result {
+                    case .success(let image):
+                        DispatchQueue.main.async {
+                            cell.setupSearchDataCollectionCell(with: title, image: image, index: indexPath)
+                        }
+                    case .failure(let failure):
+                        print(failure)
+                    }
+                }
+            }
+        }
         
         return cell
     }
