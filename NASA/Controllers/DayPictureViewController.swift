@@ -90,7 +90,7 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Objective - C method
     /// Method for push to detail view into headerReuseView
     @objc func headerGestureTap() {
-        print("Hello")
+
         let pictureData = pictureArr[0]
         let hdurl = pictureData.hdurl
         let image = cache.getImage(for: hdurl as NSString)
@@ -231,7 +231,7 @@ private extension DayPictureViewController {
 
 
 
-
+// Проба пагинации
 //extension DayPictureViewController: UIScrollViewDelegate {
 //
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
