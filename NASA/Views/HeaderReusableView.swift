@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HeaderReusableView: UICollectionReusableView {
+final class HeaderReusableView: UICollectionReusableView {
     
     //MARK: - Properties
     
@@ -24,6 +24,8 @@ class HeaderReusableView: UICollectionReusableView {
     }()
     private lazy var pictureView = UIImageView()
     private lazy var pictureLabel = UILabel(font: .boldSystemFont(ofSize: 22), numberOfLines: 0, textColor: .white, textAlignment: .center)
+    var gestureRecognize = UITapGestureRecognizer()
+    
     
     //MARK: - Initialize
     
@@ -59,18 +61,22 @@ class HeaderReusableView: UICollectionReusableView {
         pictureView.image = image
         activityIndicator.stopAnimating()
     }
-        
+    
+    func addTargetForGestureRecognizer(target: Any, selector: Selector) {
+        gestureRecognize.addTarget(target, action: selector)
+    }
+    
     //MARK: - Private methods
     
     private func setupHeaderViewElements() {
-        
+        // Setup view
         self.addSubviews(pictureView, activityIndicator)
         pictureView.addSubviews(pictureLabel)
-        
-        self.layer.zPosition = 0
-        pictureView.contentMode = .scaleAspectFill
+        pictureView.addGestureRecognizer(gestureRecognize)
+        pictureView.isUserInteractionEnabled = true
     }
-
+    
+    /// Setup constraints for element in Header view
     private func setupConstraints() {
         // Picture view
         pictureView.snp.makeConstraints { make in
@@ -79,7 +85,6 @@ class HeaderReusableView: UICollectionReusableView {
             make.trailing.equalTo(self.snp_trailingMargin).inset(10)
             make.bottom.equalTo(self.snp_bottomMargin).offset(10)
         }
-        
         // Picture label
         pictureLabel.snp.makeConstraints { make in
             make.leading.equalTo(pictureView.snp_leadingMargin)
@@ -89,7 +94,7 @@ class HeaderReusableView: UICollectionReusableView {
         
         // Activity indicator
         activityIndicator.snp.makeConstraints { make in
-            make.edges.equalTo(self)
+            make.center.equalTo(self)
         }
     }
 }

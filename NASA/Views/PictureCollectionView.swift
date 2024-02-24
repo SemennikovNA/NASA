@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PictureCollectionView: UICollectionView {
+final class PictureCollectionView: UICollectionView {
     
     //MARK: - Initialize
     

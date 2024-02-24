@@ -17,7 +17,7 @@ protocol SearchResultDataDelegate {
     func didFailWithError(_ error: Error)
 }
 
-class NetworkManager {
+final class NetworkManager {
     
     //MARK: - Properties
     

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImageCache {
+final class ImageCache {
     
     //MARK: - Singleton
     

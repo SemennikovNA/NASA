@@ -13,7 +13,6 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     var cache = ImageCache.shared
     var networkManager = NetworkManager.shared
-    var mokData = MokData()
     var searchResult: [Item] {
         didSet {
             print(self.searchResult.count)
