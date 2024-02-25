@@ -9,6 +9,7 @@ import UIKit
 
 protocol DayPictureDataDelegate {
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
+    func fetchTodayPicture(_ networkManager: NetworkManager, model: [TodayPictureModel])
     func didFailWithError(_ error: Error)
 }
 
@@ -34,7 +35,7 @@ final class NetworkManager {
     
     //MARK: - Method
     /// Create url depending on parameters
-    func createURL(search: Bool = false, searchString: String = "", count: Int) -> URL? {
+    func createAllImageURL(search: Bool = false, searchString: String = "", count: Int) -> URL? {
         let tunnel = "https://"
         let url = "api.nasa.gov"
         let dayPic = "/planetary/apod?"
@@ -56,15 +57,28 @@ final class NetworkManager {
         }
     }
     
+    /// Create url for fetch day picture
+    func createDayPicture() -> URL? {
+        let tunnel = "https://"
+        let url = "api.nasa.gov"
+        let dayPic = "/planetary/apod?"
+        let key = "&api_key=\(self.apiKey)"
+        
+        let urlForDayPicture = tunnel + url + dayPic + key
+        return URL(string: urlForDayPicture)
+    }
+    
     //MARK: - Private method
     /// Fetch data for day picture url
     func fetchData(count: Int, completion: @escaping (Result<DayPictureModel, Error>) -> ()) {
-        guard let url = createURL(count: count) else {
+        guard let dayCollection = createAllImageURL(count: count) else {
             completion(.failure(NetworkError.badUrl))
             return
         }
+        print(dayCollection)
+        guard let dayImage = createDayPicture() else { return }
         
-        session.dataTask(with: url) { data, response, error in
+        session.dataTask(with: dayCollection) { data, response, error in
             guard let data else {
                 if let error {
                     completion(.failure(error))
@@ -78,6 +92,21 @@ final class NetworkManager {
                 completion(.failure(error))
             }
             
+        }.resume()
+        
+        session.dataTask(with: dayImage) { data, response, error in
+            guard let data else {
+                if let error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            do {
+                let dayPicture = try self.decoder.decode([TodayPictureModel].self, from: data)
+                self.dayPictureDelegate?.fetchTodayPicture(self, model: dayPicture)
+            } catch {
+                completion(.failure(error))
+            }
         }.resume()
     }
     

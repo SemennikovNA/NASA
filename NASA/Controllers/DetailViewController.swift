@@ -90,7 +90,7 @@ extension DetailViewController: UIScrollViewDelegate {
     private func zoomImageWhenScrolling(_ scrollView: UIScrollView) {
         let yOffset = scrollView.contentOffset.y
         let imageViewHeight = max(600 - yOffset, 0)
-        let offset: CGFloat = 10
+        let offset: CGFloat = 50
         detailImage.snp.updateConstraints { make in
             make.height.equalTo(imageViewHeight + offset)
         }

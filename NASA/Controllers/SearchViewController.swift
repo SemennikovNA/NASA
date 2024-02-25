@@ -156,7 +156,7 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text else { return }
-        guard let url = networkManager.createURL(search: true, searchString: text, count: 10) else { return }
+        guard let url = networkManager.createAllImageURL(search: true, searchString: text, count: 10) else { return }
         networkManager.fetchSearchResult(url: url) { result in
             switch result {
             case .success(let success):

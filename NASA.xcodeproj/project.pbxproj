@@ -28,6 +28,7 @@
 		1E9DCA5A2B77DFDD00834947 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9DCA592B77DFDD00834947 /* ImageCache.swift */; };
 		1EA061D12B8A176800EEBBD0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1EA061D02B8A176800EEBBD0 /* SnapKit */; };
 		1EA061D32B8A176800EEBBD0 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 1EA061D22B8A176800EEBBD0 /* SnapKit-Dynamic */; };
+		1EA061D52B8BA61700EEBBD0 /* TodayPictureModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA061D42B8BA61700EEBBD0 /* TodayPictureModel.swift */; };
 		1EC9110B2B87A97700F3E775 /* SearchPictureModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC9110A2B87A97700F3E775 /* SearchPictureModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +54,7 @@
 		1E9DCA552B77761600834947 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		1E9DCA572B77C27000834947 /* DayPictureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPictureModel.swift; sourceTree = "<group>"; };
 		1E9DCA592B77DFDD00834947 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		1EA061D42B8BA61700EEBBD0 /* TodayPictureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayPictureModel.swift; sourceTree = "<group>"; };
 		1EC9110A2B87A97700F3E775 /* SearchPictureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPictureModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +125,7 @@
 			children = (
 				1E9DCA572B77C27000834947 /* DayPictureModel.swift */,
 				1EC9110A2B87A97700F3E775 /* SearchPictureModel.swift */,
+				1EA061D42B8BA61700EEBBD0 /* TodayPictureModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				1E9DCA312B7283A800834947 /* UILabel - Extension.swift in Sources */,
 				1E9DCA282B726E4D00834947 /* DetailViewController.swift in Sources */,
 				1E7C9C4A2B8241E20088199B /* DetailImageView.swift in Sources */,
+				1EA061D52B8BA61700EEBBD0 /* TodayPictureModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

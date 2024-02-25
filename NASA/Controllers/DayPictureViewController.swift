@@ -25,7 +25,8 @@ final class DayPictureViewController: UIViewController {
     
     let networkManager = NetworkManager.shared
     let cache = ImageCache.shared
-    var pictureArr: [DayPictureModel] {
+    var dayPicture: [TodayPictureModel]
+    var allPictureArray: [DayPictureModel] {
         didSet {
             DispatchQueue.main.async {
                 self.activityIndicator.stopAnimating()
@@ -37,7 +38,8 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Initialize
     
     init() {
-        self.pictureArr = []
+        self.dayPicture = []
+        self.allPictureArray = []
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -77,7 +79,7 @@ final class DayPictureViewController: UIViewController {
     
     /// Method for fetch data
     private func fetchData() {
-        networkManager.fetchData(count: 11) { result in
+        networkManager.fetchData(count: 10) { result in
             switch result {
             case .success(let data):
                 print(data)
@@ -91,8 +93,8 @@ final class DayPictureViewController: UIViewController {
     /// Method for push to detail view into headerReuseView
     @objc func headerGestureTap() {
 
-        let pictureData = pictureArr[0]
-        let hdurl = pictureData.hdurl
+        let pictureData = allPictureArray[0]
+        let hdurl = pictureData.url
         let image = cache.getImage(for: hdurl as NSString)
         let copyrightLabel = pictureData.copyright ?? ""
         let titleLabel = pictureData.title
@@ -108,11 +110,16 @@ final class DayPictureViewController: UIViewController {
 }
 
 //MARK: - Extension
-
+//MARK: DayPictureDataDelegate method
 extension DayPictureViewController: DayPictureDataDelegate {
     
+    func fetchTodayPicture(_ networkManager: NetworkManager, model: [TodayPictureModel]) {
+        self.dayPicture = model
+    }
+    
+    
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel]) {
-        self.pictureArr = model
+        self.allPictureArray = model
     }
     
     func didFailWithError(_ error: Error) {
@@ -120,11 +127,34 @@ extension DayPictureViewController: DayPictureDataDelegate {
     }
 }
 
+//MARK: UIScrollViewDelegate method
+extension DayPictureViewController: UIScrollViewDelegate {
+
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        
+//        let downloadPosition = scrollView.contentOffset.y
+//        if downloadPosition > (pictureCollectionView.contentSize.height - 100 - scrollView.frame.size.height) {
+//            print("Был скролл")
+//            networkManager.fetchData(count: 10) { result in
+//                switch result {
+//                case .success(let data):
+//                    DispatchQueue.main.async {
+//                        self.pictureArr.append(data)
+//                        self.pictureCollectionView.reloadData()
+//                    }
+//                case .failure(let failure):
+//                    print("Ошибка \(failure)")
+//                }
+//            }
+//        }
+//    }
+}
+
 //MARK: UICollectionViewDelegates methods
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pictureArr.count
+        return allPictureArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -132,12 +162,12 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         cell.layer.cornerRadius = cell.frame.size.width / 9
         cell.clipsToBounds = true
         
-        let data = pictureArr[indexPath.item]
-        let hdurl = data.hdurl
+        let data = allPictureArray[indexPath.item]
+        let url = data.url
         
-        if let image = cache.getImage(for: hdurl as NSString) {
+        if let image = cache.getImage(for: url as NSString) {
             cell.setupPictureCollectionCell(with: data, image: image)
-        } else if let imageUrl = URL(string: hdurl) {
+        } else if let imageUrl = URL(string: url) {
             networkManager.fetchImage(withURL: imageUrl) { result in
                 switch result {
                 case .success(let image):
@@ -153,8 +183,8 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let pictureData = pictureArr[indexPath.item]
-        let hdurl = pictureData.hdurl
+        let pictureData = allPictureArray[indexPath.item]
+        let hdurl = pictureData.url
         let image = cache.getImage(for: hdurl as NSString)
         let copyrightLabel = pictureData.copyright ?? ""
         let titleLabel = pictureData.title
@@ -189,7 +219,7 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
             header.layoutSubviews()
             header.addTargetForGestureRecognizer(target: self, selector: #selector(headerGestureTap))
-            if let firstPicture = pictureArr.first, let imageUrl = firstPicture.hdurl as? NSString {
+            if let firstPicture = dayPicture.first, let imageUrl = firstPicture.url as? NSString {
                 if let image = cache.getImage(for: imageUrl) {
                     DispatchQueue.main.async {
                         header.setupHeaderView(with: firstPicture)
@@ -210,7 +240,7 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
 
 
 //MARK: - Private extension
-
+//MARK: Constraints for DayPictureViewController
 private extension DayPictureViewController {
     /// Setup constraints for search view controller
     func setupConstraints() {
@@ -226,28 +256,3 @@ private extension DayPictureViewController {
         }
     }
 }
-
-
-
-
-
-// Проба пагинации
-//extension DayPictureViewController: UIScrollViewDelegate {
-//
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let downloadPosition = scrollView.contentOffset.y
-//        if downloadPosition > (pictureCollectionView.contentSize.height - 100 - scrollView.frame.size.height) {
-//            networkManager.fetchData(count: 10) { result in
-//                switch result {
-//                case .success(let data):
-//                    self.pictureArr.append(data)
-//                    DispatchQueue.main.async {
-//                        self.pictureCollectionView.reloadData()
-//                    }
-//                case .failure(let failure):
-//                    print("Ошибка \(failure)")
-//                }
-//            }
-//        }
-//    }
-//}

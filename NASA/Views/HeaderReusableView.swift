@@ -53,7 +53,7 @@ final class HeaderReusableView: UICollectionReusableView {
     
     //MARK: - Method
     
-    func setupHeaderView(with model: DayPictureModel) {
+    func setupHeaderView(with model: TodayPictureModel) {
         pictureLabel.text = model.title
     }
     
