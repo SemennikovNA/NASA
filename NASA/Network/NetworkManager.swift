@@ -9,7 +9,7 @@ import UIKit
 
 protocol DayPictureDataDelegate {
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
-    func fetchTodayPicture(_ networkManager: NetworkManager, model: [TodayPictureModel])
+    func fetchTodayPicture(_ networkManager: NetworkManager, model: TodayPictureModel)
     func didFailWithError(_ error: Error)
 }
 
@@ -75,7 +75,6 @@ final class NetworkManager {
             completion(.failure(NetworkError.badUrl))
             return
         }
-        print(dayCollection)
         guard let dayImage = createDayPicture() else { return }
         
         session.dataTask(with: dayCollection) { data, response, error in
@@ -102,7 +101,7 @@ final class NetworkManager {
                 return
             }
             do {
-                let dayPicture = try self.decoder.decode([TodayPictureModel].self, from: data)
+                let dayPicture = try self.decoder.decode(TodayPictureModel.self, from: data)
                 self.dayPictureDelegate?.fetchTodayPicture(self, model: dayPicture)
             } catch {
                 completion(.failure(error))

@@ -10,7 +10,15 @@ import Foundation
 struct TodayPictureModel: Codable {
     
     let copyright: String
-    let title: String
     let explanation: String
+    let title: String
     let url: String
+    
+    init(copyright: String, explanation: String, title: String, url: String) {
+        self.copyright = copyright
+        self.explanation = explanation
+        self.title = title
+        self.url = url
+    }
+
 }

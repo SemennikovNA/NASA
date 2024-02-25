@@ -53,15 +53,13 @@ final class HeaderReusableView: UICollectionReusableView {
     
     //MARK: - Method
     
-    func setupHeaderView(with model: TodayPictureModel) {
-        pictureLabel.text = model.title
-    }
-    
-    func setupImageForHeader(image: UIImage) {
+    func setupHeaderView(title: String, image: UIImage) {
+        pictureLabel.text = title
         pictureView.image = image
         activityIndicator.stopAnimating()
     }
     
+
     func addTargetForGestureRecognizer(target: Any, selector: Selector) {
         gestureRecognize.addTarget(target, action: selector)
     }

@@ -25,7 +25,7 @@ final class DayPictureViewController: UIViewController {
     
     let networkManager = NetworkManager.shared
     let cache = ImageCache.shared
-    var dayPicture: [TodayPictureModel]
+    var dayPicture: TodayPictureModel
     var allPictureArray: [DayPictureModel] {
         didSet {
             DispatchQueue.main.async {
@@ -38,10 +38,11 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Initialize
     
     init() {
-        self.dayPicture = []
-        self.allPictureArray = []
-        super.init(nibName: nil, bundle: nil)
+        self.dayPicture = TodayPictureModel(copyright: "", explanation: "", title: "", url: "")
+        self.allPictureArray = [] // Инициализация allPictureArray
+        super.init(nibName: nil, bundle: nil) // Вызов super.init() после инициализации всех свойств
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -92,13 +93,12 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Objective - C method
     /// Method for push to detail view into headerReuseView
     @objc func headerGestureTap() {
-
-        let pictureData = allPictureArray[0]
-        let hdurl = pictureData.url
-        let image = cache.getImage(for: hdurl as NSString)
-        let copyrightLabel = pictureData.copyright ?? ""
-        let titleLabel = pictureData.title
-        let explanationLabel = pictureData.explanation
+        let dayPic = dayPicture
+        let url = dayPic.url
+        let image = cache.getImage(for: url as NSString)
+        let copyrightLabel = dayPicture.copyright
+        let titleLabel = dayPic.title
+        let explanationLabel = dayPic.explanation
         let detailVC = DetailViewController()
         detailVC.copyrightTitle = copyrightLabel
         detailVC.headTitle = titleLabel
@@ -113,8 +113,14 @@ final class DayPictureViewController: UIViewController {
 //MARK: DayPictureDataDelegate method
 extension DayPictureViewController: DayPictureDataDelegate {
     
-    func fetchTodayPicture(_ networkManager: NetworkManager, model: [TodayPictureModel]) {
-        self.dayPicture = model
+    func fetchTodayPicture(_ networkManager: NetworkManager, model: TodayPictureModel) {
+        let author = model.copyright
+        let title = model.title
+        let description = model.explanation
+        let url = model.url
+        
+        let todayPicture = TodayPictureModel(copyright: author, explanation: description, title: title, url: url)
+        self.dayPicture = todayPicture
     }
     
     
@@ -128,8 +134,8 @@ extension DayPictureViewController: DayPictureDataDelegate {
 }
 
 //MARK: UIScrollViewDelegate method
-extension DayPictureViewController: UIScrollViewDelegate {
-
+//extension DayPictureViewController: UIScrollViewDelegate {
+//
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
 //        
 //        let downloadPosition = scrollView.contentOffset.y
@@ -148,7 +154,7 @@ extension DayPictureViewController: UIScrollViewDelegate {
 //            }
 //        }
 //    }
-}
+//}
 
 //MARK: UICollectionViewDelegates methods
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -219,11 +225,19 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
             header.layoutSubviews()
             header.addTargetForGestureRecognizer(target: self, selector: #selector(headerGestureTap))
-            if let firstPicture = dayPicture.first, let imageUrl = firstPicture.url as? NSString {
-                if let image = cache.getImage(for: imageUrl) {
-                    DispatchQueue.main.async {
-                        header.setupHeaderView(with: firstPicture)
-                        header.setupImageForHeader(image: image)
+            let imageUrl = dayPicture.url
+            let title = dayPicture.title
+            if let image = cache.getImage(for: imageUrl as NSString) {
+                header.setupHeaderView(title: title, image: image)
+            } else if let imageUrl = URL(string: imageUrl) {
+                networkManager.fetchImage(withURL: imageUrl) { result in
+                    switch result {
+                    case .success(let image):
+                        DispatchQueue.main.async {
+                            header.setupHeaderView(title: title, image: image)
+                        }
+                    case .failure(let failure):
+                        print(failure)
                     }
                 }
             }
