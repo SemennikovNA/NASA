@@ -9,7 +9,7 @@ import UIKit
 
 protocol DayPictureDataDelegate {
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
-    func fetchTodayPicture(_ networkManager: NetworkManager, model: TodayPictureModel)
+    func didUpdateTodayPicture(_ networkManager: NetworkManager, model: DayPictureModel)
     func didFailWithError(_ error: Error)
 }
 
@@ -57,17 +57,6 @@ final class NetworkManager {
         }
     }
     
-    /// Create url for fetch day picture
-    func createDayPicture() -> URL? {
-        let tunnel = "https://"
-        let url = "api.nasa.gov"
-        let dayPic = "/planetary/apod?"
-        let key = "&api_key=\(self.apiKey)"
-        
-        let urlForDayPicture = tunnel + url + dayPic + key
-        return URL(string: urlForDayPicture)
-    }
-    
     //MARK: - Private method
     /// Fetch data for day picture url
     func fetchData(count: Int, completion: @escaping (Result<DayPictureModel, Error>) -> ()) {
@@ -75,7 +64,6 @@ final class NetworkManager {
             completion(.failure(NetworkError.badUrl))
             return
         }
-        guard let dayImage = createDayPicture() else { return }
         
         session.dataTask(with: dayCollection) { data, response, error in
             guard let data else {
@@ -85,31 +73,20 @@ final class NetworkManager {
                 return
             }
             do {
-                let nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
+                var nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
+                let firstItem = nasaData.first
+                let todayPicture = firstItem
+                self.dayPictureDelegate?.didUpdateTodayPicture(self, model: todayPicture!)
                 self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
             } catch {
+                self.dayPictureDelegate?.didFailWithError(error)
                 completion(.failure(error))
             }
             
         }.resume()
-        
-        session.dataTask(with: dayImage) { data, response, error in
-            guard let data else {
-                if let error {
-                    completion(.failure(error))
-                }
-                return
-            }
-            do {
-                let dayPicture = try self.decoder.decode(TodayPictureModel.self, from: data)
-                self.dayPictureDelegate?.fetchTodayPicture(self, model: dayPicture)
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
     }
     
-    ///
+    /// Fetch data for search view controller
     func fetchSearchResult(url: URL?, completion: @escaping (Result<Search, Error>) -> ()) {
         guard let url = url else {
             completion(.failure(NetworkError.badUrl))
@@ -119,7 +96,7 @@ final class NetworkManager {
         session.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 guard let response = response else { return }
-                print("хуй\(response)")
+                print(response)
                 if let error = error {
                     completion(.failure(error))
                 } else {

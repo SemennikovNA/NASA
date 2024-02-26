@@ -25,7 +25,7 @@ final class DayPictureViewController: UIViewController {
     
     let networkManager = NetworkManager.shared
     let cache = ImageCache.shared
-    var dayPicture: TodayPictureModel
+    var firstItem: DayPictureModel
     var allPictureArray: [DayPictureModel] {
         didSet {
             DispatchQueue.main.async {
@@ -38,7 +38,7 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Initialize
     
     init() {
-        self.dayPicture = TodayPictureModel(copyright: "", explanation: "", title: "", url: "")
+        self.firstItem = DayPictureModel(copyright: "", title: "", explanation: "", url: "")
         self.allPictureArray = [] // Инициализация allPictureArray
         super.init(nibName: nil, bundle: nil) // Вызов super.init() после инициализации всех свойств
     }
@@ -80,7 +80,7 @@ final class DayPictureViewController: UIViewController {
     
     /// Method for fetch data
     private func fetchData() {
-        networkManager.fetchData(count: 10) { result in
+        networkManager.fetchData(count: 11) { result in
             switch result {
             case .success(let data):
                 print(data)
@@ -93,18 +93,18 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Objective - C method
     /// Method for push to detail view into headerReuseView
     @objc func headerGestureTap() {
-        let dayPic = dayPicture
-        let url = dayPic.url
-        let image = cache.getImage(for: url as NSString)
-        let copyrightLabel = dayPicture.copyright
-        let titleLabel = dayPic.title
-        let explanationLabel = dayPic.explanation
+        let pictureData = allPictureArray[0]
+        let hdurl = pictureData.url
+        let image = cache.getImage(for: hdurl as NSString)
+        let copyrightLabel = pictureData.copyright ?? ""
+        let titleLabel = pictureData.title
+        let explanationLabel = pictureData.explanation
         let detailVC = DetailViewController()
         detailVC.copyrightTitle = copyrightLabel
         detailVC.headTitle = titleLabel
         detailVC.descriptionTitle = explanationLabel
         detailVC.dayImage = image!
-        
+
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
@@ -113,19 +113,14 @@ final class DayPictureViewController: UIViewController {
 //MARK: DayPictureDataDelegate method
 extension DayPictureViewController: DayPictureDataDelegate {
     
-    func fetchTodayPicture(_ networkManager: NetworkManager, model: TodayPictureModel) {
-        let author = model.copyright
-        let title = model.title
-        let description = model.explanation
-        let url = model.url
-        
-        let todayPicture = TodayPictureModel(copyright: author, explanation: description, title: title, url: url)
-        self.dayPicture = todayPicture
-    }
     
+    func didUpdateTodayPicture(_ networkManager: NetworkManager, model: DayPictureModel) {
+        self.firstItem = model
+    }
     
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel]) {
         self.allPictureArray = model
+        self.allPictureArray.removeFirst()
     }
     
     func didFailWithError(_ error: Error) {
@@ -145,8 +140,7 @@ extension DayPictureViewController: DayPictureDataDelegate {
 //                switch result {
 //                case .success(let data):
 //                    DispatchQueue.main.async {
-//                        self.pictureArr.append(data)
-//                        self.pictureCollectionView.reloadData()
+//                        self.allPictureArray.append(data)
 //                    }
 //                case .failure(let failure):
 //                    print("Ошибка \(failure)")
@@ -225,27 +219,30 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
             header.layoutSubviews()
             header.addTargetForGestureRecognizer(target: self, selector: #selector(headerGestureTap))
-            let imageUrl = dayPicture.url
-            let title = dayPicture.title
-            if let image = cache.getImage(for: imageUrl as NSString) {
-                header.setupHeaderView(title: title, image: image)
-            } else if let imageUrl = URL(string: imageUrl) {
-                networkManager.fetchImage(withURL: imageUrl) { result in
-                    switch result {
-                    case .success(let image):
-                        DispatchQueue.main.async {
-                            header.setupHeaderView(title: title, image: image)
+                let headerData = firstItem
+                let imageUrl = headerData.url
+                print(imageUrl)
+                let title = headerData.title
+                if let image = cache.getImage(for: imageUrl as NSString) {
+                    header.setupHeaderView(title: title, image: image)
+                } else if let imageURL = URL(string: imageUrl) {
+                    networkManager.fetchImage(withURL: imageURL) { result in
+                        switch result {
+                        case .success(let image):
+                            DispatchQueue.main.async {
+                                header.setupHeaderView(title: title, image: image)
+                            }
+                        case .failure(let failure):
+                            print(failure)
                         }
-                    case .failure(let failure):
-                        print(failure)
                     }
                 }
-            }
             return header
         } else {
             return UICollectionReusableView()
         }
     }
+
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: 150, height: 200)
@@ -263,7 +260,6 @@ private extension DayPictureViewController {
             make.edges.equalTo(view)
             make.width.equalTo(view.snp.width)
         }
-        
         // Activity indicator
         activityIndicator.snp.makeConstraints { make in
             make.edges.equalTo(view)
