@@ -89,8 +89,8 @@ extension DetailViewController: UIScrollViewDelegate {
     /// Calculation of image size when scrolling
     private func zoomImageWhenScrolling(_ scrollView: UIScrollView) {
         let yOffset = scrollView.contentOffset.y
-        let imageViewHeight = max(600 - yOffset, 0)
-        let offset: CGFloat = 50
+        let imageViewHeight = max(400 - yOffset, 0)
+        let offset: CGFloat = 100
         detailImage.snp.updateConstraints { make in
             make.height.equalTo(imageViewHeight + offset)
         }
@@ -136,7 +136,7 @@ private extension DetailViewController {
         // Content view
         contentView.snp.makeConstraints { make in
             make.center.equalTo(verticalScroll)
-            make.top.equalTo(verticalScroll).inset(-200)
+            make.top.equalTo(verticalScroll).inset(-100)
             make.leading.trailing.bottom.equalTo(verticalScroll)
             make.width.equalTo(verticalScroll.snp.width)
         }

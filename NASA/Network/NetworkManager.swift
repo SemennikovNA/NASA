@@ -8,8 +8,8 @@
 import UIKit
 
 protocol DayPictureDataDelegate {
+    func didUpdatуHeader(_ networkManager: NetworkManager, model: DayPictureModel)
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
-    func didUpdateTodayPicture(_ networkManager: NetworkManager, model: DayPictureModel)
     func didFailWithError(_ error: Error)
 }
 
@@ -74,12 +74,13 @@ final class NetworkManager {
             }
             do {
                 var nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
-                let firstItem = nasaData.first
-                let todayPicture = firstItem
-                self.dayPictureDelegate?.didUpdateTodayPicture(self, model: todayPicture!)
-                self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
+                if let firstImage = nasaData.first {
+                    self.dayPictureDelegate?.didUpdatуHeader(self, model: firstImage)
+                    self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
+                } else {
+                    self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
+                }
             } catch {
-                self.dayPictureDelegate?.didFailWithError(error)
                 completion(.failure(error))
             }
             
@@ -118,26 +119,26 @@ final class NetworkManager {
     /// Fetch data if image not in cache
     func fetchImage(withURL url: URL, completion: @escaping (Result<UIImage, Error>) -> ()) {
         if let cachedImage = ImageCache.shared.getImage(for: url.absoluteString as NSString) {
-                completion(.success(cachedImage))
+            completion(.success(cachedImage))
+            return
+        }
+        
+        session.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
                 return
             }
             
-            session.dataTask(with: url) { data, response, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                
-                guard let data = data, let image = UIImage(data: data) else {
-                    let error = NSError(domain: "com.example.NASA", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode image data"])
-                    completion(.failure(error))
-                    return
-                }
-                
-                ImageCache.shared.cacheImage(image: image, for: url.absoluteString as NSString)
-                completion(.success(image))
-            }.resume()
-        }
+            guard let data = data, let image = UIImage(data: data) else {
+                let error = NSError(domain: "com.example.NASA", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode image data"])
+                completion(.failure(error))
+                return
+            }
+            
+            ImageCache.shared.cacheImage(image: image, for: url.absoluteString as NSString)
+            completion(.success(image))
+        }.resume()
+    }
 }
 
 enum NetworkError: Error {

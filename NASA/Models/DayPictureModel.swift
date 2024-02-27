@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DayPictureModel: Codable {
+struct DayPictureModel: Codable, Equatable {
     
     let copyright: String?
     let title: String

@@ -25,8 +25,8 @@ final class DayPictureViewController: UIViewController {
     
     let networkManager = NetworkManager.shared
     let cache = ImageCache.shared
-    var firstItem: DayPictureModel
-    var allPictureArray: [DayPictureModel] {
+    var headerData: DayPictureModel
+    var allPictureArray: [DayPictureModel] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.activityIndicator.stopAnimating()
@@ -38,11 +38,10 @@ final class DayPictureViewController: UIViewController {
     //MARK: - Initialize
     
     init() {
-        self.firstItem = DayPictureModel(copyright: "", title: "", explanation: "", url: "")
-        self.allPictureArray = [] // Инициализация allPictureArray
-        super.init(nibName: nil, bundle: nil) // Вызов super.init() после инициализации всех свойств
+        self.headerData = DayPictureModel(copyright: "", title: "", explanation: "", url: "")
+        super.init(nibName: nil, bundle: nil)
     }
-
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -80,33 +79,34 @@ final class DayPictureViewController: UIViewController {
     
     /// Method for fetch data
     private func fetchData() {
-        networkManager.fetchData(count: 11) { result in
-            switch result {
-            case .success(let data):
-                print(data)
-            case .failure(let failure):
-                print(failure)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.networkManager.fetchData(count: 11) { result in
+                switch result {
+                case .success(let data):
+                    print(data)
+                case .failure(let failure):
+                    print(failure)
+                }
             }
         }
     }
-    
     //MARK: - Objective - C method
     /// Method for push to detail view into headerReuseView
     @objc func headerGestureTap() {
-        let pictureData = allPictureArray[0]
-        let hdurl = pictureData.url
-        let image = cache.getImage(for: hdurl as NSString)
-        let copyrightLabel = pictureData.copyright ?? ""
-        let titleLabel = pictureData.title
-        let explanationLabel = pictureData.explanation
-        let detailVC = DetailViewController()
-        detailVC.copyrightTitle = copyrightLabel
-        detailVC.headTitle = titleLabel
-        detailVC.descriptionTitle = explanationLabel
-        detailVC.dayImage = image!
-
-        navigationController?.pushViewController(detailVC, animated: true)
-    }
+            
+            let hdurl = headerData.url
+            let image = cache.getImage(for: hdurl as NSString)
+            let copyrightLabel = headerData.copyright ?? ""
+            let titleLabel = headerData.title
+            let explanationLabel = headerData.explanation
+            let detailVC = DetailViewController()
+            detailVC.copyrightTitle = copyrightLabel
+            detailVC.headTitle = titleLabel
+            detailVC.descriptionTitle = explanationLabel
+            detailVC.dayImage = image!
+            
+            navigationController?.pushViewController(detailVC, animated: true)
+        }
 }
 
 //MARK: - Extension
@@ -114,41 +114,27 @@ final class DayPictureViewController: UIViewController {
 extension DayPictureViewController: DayPictureDataDelegate {
     
     
-    func didUpdateTodayPicture(_ networkManager: NetworkManager, model: DayPictureModel) {
-        self.firstItem = model
+    func didUpdatуHeader(_ networkManager: NetworkManager, model: DayPictureModel) {
+        self.headerData = model
     }
     
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel]) {
-        self.allPictureArray = model
-        self.allPictureArray.removeFirst()
+        var data = model
+        if !data.isEmpty {
+                data.removeFirst()
+                self.allPictureArray = data
+            }
     }
+    
+    func didUpdateDayPicture(_ networkManager: NetworkManager, first: DayPictureModel?, model: [DayPictureModel]) {
+
+            self.allPictureArray = model
+        }
     
     func didFailWithError(_ error: Error) {
         print(error.localizedDescription)
     }
 }
-
-//MARK: UIScrollViewDelegate method
-//extension DayPictureViewController: UIScrollViewDelegate {
-//
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        
-//        let downloadPosition = scrollView.contentOffset.y
-//        if downloadPosition > (pictureCollectionView.contentSize.height - 100 - scrollView.frame.size.height) {
-//            print("Был скролл")
-//            networkManager.fetchData(count: 10) { result in
-//                switch result {
-//                case .success(let data):
-//                    DispatchQueue.main.async {
-//                        self.allPictureArray.append(data)
-//                    }
-//                case .failure(let failure):
-//                    print("Ошибка \(failure)")
-//                }
-//            }
-//        }
-//    }
-//}
 
 //MARK: UICollectionViewDelegates methods
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -219,9 +205,7 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
             header.layoutSubviews()
             header.addTargetForGestureRecognizer(target: self, selector: #selector(headerGestureTap))
-                let headerData = firstItem
                 let imageUrl = headerData.url
-                print(imageUrl)
                 let title = headerData.title
                 if let image = cache.getImage(for: imageUrl as NSString) {
                     header.setupHeaderView(title: title, image: image)
@@ -242,7 +226,7 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
             return UICollectionReusableView()
         }
     }
-
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: 150, height: 200)

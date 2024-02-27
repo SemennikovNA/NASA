@@ -49,8 +49,8 @@ class PictureCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Methods
     
-    func setupPictureCollectionCell(with model: DayPictureModel, image: UIImage) {
-        pictureLabel.text = model.title
+    func setupPictureCollectionCell(with title: DayPictureModel, image: UIImage) {
+        pictureLabel.text = title.title
         pictureCellView.image = image
         activityIndicator.stopAnimating()
     }

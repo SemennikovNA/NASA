@@ -26,7 +26,7 @@ struct Item: Codable {
 // MARK: - Datum
 struct Datum: Codable {
     let title: String
-    
+    let description: String
 }
 
 // MARK: - Link

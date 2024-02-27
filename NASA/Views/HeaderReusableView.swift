@@ -22,7 +22,11 @@ final class HeaderReusableView: UICollectionReusableView {
         indicator.hidesWhenStopped = true
         return indicator
     }()
-    private lazy var pictureView = UIImageView()
+    private lazy var pictureView: UIImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleAspectFill
+        return image
+    }()
     private lazy var pictureLabel = UILabel(font: .boldSystemFont(ofSize: 22), numberOfLines: 0, textColor: .white, textAlignment: .center)
     var gestureRecognize = UITapGestureRecognizer()
     
