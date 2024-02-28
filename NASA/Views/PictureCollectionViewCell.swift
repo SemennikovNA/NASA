@@ -48,13 +48,14 @@ class PictureCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: - Methods
-    
+    /// Setup data for day picture collection cell
     func setupPictureCollectionCell(with title: DayPictureModel, image: UIImage) {
         pictureLabel.text = title.title
         pictureCellView.image = image
         activityIndicator.stopAnimating()
     }
     
+    /// Setup data for search collection cell
     func setupSearchDataCollectionCell(with model: String, image: UIImage, index: IndexPath) {
         pictureLabel.text = model
         pictureCellView.image = image
@@ -62,13 +63,14 @@ class PictureCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: - Private method
-    
+    /// Setup collection cell
     private func setupCollectionCell() {
         contentView.addSubviews(pictureCellView, activityIndicator)
         pictureCellView.addSubviews(pictureLabel)
         pictureCellView.contentMode = .scaleAspectFill
     }
     
+    /// Setup constraints for collection cell
     private func setupConstraints() {
          // Picture cell view
         pictureCellView.snp.makeConstraints { make in

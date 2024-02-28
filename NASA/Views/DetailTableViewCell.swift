@@ -36,7 +36,7 @@ class DetailTableViewCell: UITableViewCell {
     }
     
     //MARK: - Method
-    
+    /// Setup data for cell
     func setupDataForCell(author: String, head: String, description: String, image: UIImage) {
         authorLabel.text = author
         headLabel.text = head
@@ -44,13 +44,14 @@ class DetailTableViewCell: UITableViewCell {
     }
     
     //MARK: - Private method
-    
+    /// Setup cell
     private func setupCell() {
         contentCellView.backgroundColor = .black
         contentView.addSubviews(contentCellView)
         contentCellView.addSubviews(authorLabel, headLabel, descriptionLabel)
     }
     
+    /// Setup constraints for cell
     private func setupContraints() {
         // Content cell view
         contentCellView.snp.makeConstraints { make in

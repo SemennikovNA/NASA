@@ -9,7 +9,6 @@ import UIKit
 
 extension UIViewController {
     
-    
     /// Setup custom controllers for tab bar controller
     func setupViewControllers(viewController: UIViewController, title: String, image: String, selectedImage: String) -> UIViewController {
         viewController.tabBarItem.title = title

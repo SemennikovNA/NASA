@@ -7,7 +7,7 @@
 import UIKit
 
 protocol DayPictureDataDelegate {
-    func didUpdatуHeader(_ networkManager: NetworkManager, model: DayPictureModel)
+    func didUpdateHeader(_ networkManager: NetworkManager, model: DayPictureModel)
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel])
     func didFailWithError(_ error: Error)
 }
@@ -74,7 +74,7 @@ final class NetworkManager {
             do {
                 let nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
                 if let firstImage = nasaData.first {
-                    self.dayPictureDelegate?.didUpdatуHeader(self, model: firstImage)
+                    self.dayPictureDelegate?.didUpdateHeader(self, model: firstImage)
                     self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
                 } else {
                     self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
@@ -92,7 +92,6 @@ final class NetworkManager {
             completion(.failure(NetworkError.badUrl))
             return
         }
-        
         session.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 guard let response = response else { return }
@@ -121,7 +120,6 @@ final class NetworkManager {
             completion(.success(cachedImage))
             return
         }
-        
         session.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -140,6 +138,7 @@ final class NetworkManager {
     }
 }
 
+/// Enum for network errors
 enum NetworkError: Error {
     
     case badUrl

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailTableView: UITableView, UITableViewDelegate {
+class DetailTableView: UITableView {
     
     //MARK: - Initialize
     
@@ -23,6 +23,8 @@ class DetailTableView: UITableView, UITableViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Private method
+    // Setup table view
     private func setupDetailTable() {
         self.backgroundColor = .black
         self.isScrollEnabled = false

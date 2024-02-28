@@ -71,7 +71,7 @@ final class DetailViewController: UIViewController {
     }
     
     //MARK: - Objective - C method
-    
+    // Logic for back button
     @objc func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
@@ -80,7 +80,7 @@ final class DetailViewController: UIViewController {
 //MARK: - Extension
 //MARK: UIScrollViewDelegate methods
 extension DetailViewController: UIScrollViewDelegate {
-    
+    // Logic for scroll screen
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         zoomImageWhenScrolling(scrollView)
         transitTitleToNavigationBar(indentation: 170, uiElement: scrollView)
@@ -111,11 +111,12 @@ extension DetailViewController: UIScrollViewDelegate {
 
 //MARK: UITableViewDelegates methods
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
-    
+    // Setup table number item
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
+    // Setup table cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = detailTableView.dequeueReusableCell(withIdentifier: "DetailTableCell", for: indexPath) as! DetailTableViewCell
         cell.setupDataForCell(author: copyrightTitle, head: headTitle, description: descriptionTitle, image: dayImage)
@@ -124,9 +125,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 //MARK: - Private extension
-
 private extension DetailViewController {
-    
     /// Setup constraints for search view controller
     func setupConstraints() {
         // Vertical scroll

@@ -25,7 +25,7 @@ final class PictureCollectionView: UICollectionView {
     }
     
     //MARK: - Private method
-    
+    /// Setup collection view
     private func setupPictureCollectionView() {
         self.backgroundColor = .black
         register(HeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderReusableView.reuseIdentifire)

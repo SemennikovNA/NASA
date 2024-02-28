@@ -13,7 +13,7 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     var cache = ImageCache.shared
     var networkManager = NetworkManager.shared
-    var searchResult: [Item] {
+    var searchResult: [Item] = [] {
         didSet {
             print(self.searchResult.count)
             DispatchQueue.main.async {
@@ -26,17 +26,6 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     private var searchController = UISearchController(searchResultsController: nil)
     private let searchCollection = PictureCollectionView()
-    
-    //MARK: - Initialize
-    
-    init() {
-        self.searchResult = []
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     //MARK: - Life cycle
     
@@ -71,14 +60,14 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     /// Setup search bar in
     private func setupSearchBar() {
-        searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.searchBarStyle = .default
         searchController.searchBar.showsLargeContentViewer = true
-        searchController.searchBar.searchTextField.showsMenuAsPrimaryAction = true
         searchController.searchBar.placeholder = "Найти"
         searchController.searchBar.barTintColor = .white
         searchController.searchBar.tintColor = .white
+        searchController.searchBar.searchTextField.showsMenuAsPrimaryAction = true
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
@@ -87,26 +76,25 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
 
 //MARK: - Extension
 //MARK: SearchResultUpdateDelegate
-
 extension SearchViewController: SearchResultDataDelegate {
-    
+    // Added data for search collection
     func didUpdateSearchResult(_ networkManager: NetworkManager, model: [Item]) {
         self.searchResult = model
     }
-    
+    // Print error for delegate 
     func didFailWithError(_ error: Error) {
         print(error.localizedDescription)
     }
 }
 
 //MARK: UICollectionViewDelegates
-
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+    // Setup collection number item
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return searchResult.count
     }
     
+    // Setup cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = searchCollection.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
         cell.layer.cornerRadius = cell.frame.size.width / 15
@@ -134,6 +122,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         return cell
     }
     
+    // Methods for setup size and insets
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         let spacinLine: CGFloat = 10
         return spacinLine
@@ -143,17 +132,16 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         let sizeForCell = CGSize(width: searchCollection.bounds.size.width, height: 190)
         return sizeForCell
     }
-    
 }
 
 //MARK: UISearchResultsUpdating
-
-extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
-    
+extension SearchViewController: UISearchBarDelegate {
+    // Hiding the keyboard
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
         return true
     }
     
+    // Send a request based on the text you enter
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text else { return }
         guard let url = networkManager.createAllImageURL(search: true, searchString: text, perPage: 10) else { return }
@@ -166,14 +154,9 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
             }
         }
     }
-        
-    func updateSearchResults(for searchController: UISearchController) {
-        
-    }
 }
 
 //MARK: - Private extension
-
 private extension SearchViewController {
      /// Setup constraints for search view controller
     func setupConstraints() {

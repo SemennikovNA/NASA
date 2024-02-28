@@ -56,20 +56,20 @@ final class HeaderReusableView: UICollectionReusableView {
     }
     
     //MARK: - Method
-    
+    /// Setup header view
     func setupHeaderView(title: String, image: UIImage) {
         pictureLabel.text = title
         pictureView.image = image
         activityIndicator.stopAnimating()
     }
     
-
+    /// Add logic for touch header
     func addTargetForGestureRecognizer(target: Any, selector: Selector) {
         gestureRecognize.addTarget(target, action: selector)
     }
     
     //MARK: - Private methods
-    
+    /// Setup header elements
     private func setupHeaderViewElements() {
         // Setup view
         self.addSubviews(pictureView, activityIndicator)

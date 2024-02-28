@@ -25,12 +25,10 @@ final class DayPictureViewController: UIViewController {
     
     let networkManager = NetworkManager.shared
     let cache = ImageCache.shared
-    let refreshControl = UIRefreshControl()
     var perPage = 20
-    var currentPage = 1
     var totalPages = 1
     var isLoading = false
-    var headerData: DayPictureModel
+    var headerData = DayPictureModel(copyright: "", title: "", explanation: "", url: "")
     var allPictureArray: [DayPictureModel] = [] {
         didSet {
             DispatchQueue.main.async {
@@ -38,18 +36,6 @@ final class DayPictureViewController: UIViewController {
                 self.pictureCollectionView.reloadData()
             }
         }
-    }
-    
-    //MARK: - Initialize
-    
-    init() {
-        self.headerData = DayPictureModel(copyright: "", title: "", explanation: "", url: "")
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     //MARK: - Life cycle
@@ -67,26 +53,41 @@ final class DayPictureViewController: UIViewController {
     }
     
     //MARK: - Private methods
-    
     /// Setup user elements in self view
     private func setupView() {
         // Setup view
         view.backgroundColor = .black
         view.addSubviews(pictureCollectionView, activityIndicator)
         
-        // Added refresh control for collection view
-        refreshControl.addTarget(self, action: #selector(loadMore), for: .valueChanged)
-        pictureCollectionView.refreshControl = refreshControl
-        
         // Signature delegates
         signatureDelegates()
     }
-    
+
     /// Method for signature delegates
     private func signatureDelegates() {
         pictureCollectionView.delegate = self
         pictureCollectionView.dataSource = self
         networkManager.dayPictureDelegate = self
+    }
+
+    /// Method for mode image load
+    private func loadMore() {
+        DispatchQueue.main.async { [self] in
+            self.networkManager.fetchData(perPage: perPage) { result in
+                switch result {
+                case .success(let data):
+                    var newData: [DayPictureModel] = []
+                    newData.append(data)
+                    let startIndex = self.allPictureArray.count
+                    self.allPictureArray.append(contentsOf: newData)
+                    
+                    let indexPaths = (startIndex..<self.allPictureArray.count).map { IndexPath(item: $0, section: 0) }
+                    self.pictureCollectionView.insertItems(at: indexPaths)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
     
     //MARK: - Objective - C method
@@ -106,38 +107,16 @@ final class DayPictureViewController: UIViewController {
         
         navigationController?.pushViewController(detailVC, animated: true)
     }
-    
-    /// Method for mode image load
-    @objc func loadMore() {
-        self.currentPage += 1
-        refreshControl.endRefreshing()
-        DispatchQueue.main.async { [self] in
-            self.networkManager.fetchData(perPage: perPage) { result in
-                switch result {
-                case .success(let data):
-                    var newData: [DayPictureModel] = []
-                    newData.append(data)
-                    let startIndex = self.allPictureArray.count
-                    self.allPictureArray.append(contentsOf: newData)
-                    
-                    let indexPaths = (startIndex..<self.allPictureArray.count).map { IndexPath(item: $0, section: 0) }
-                    self.pictureCollectionView.insertItems(at: indexPaths)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
-    }
 }
 
 //MARK: - Extension
 //MARK: DayPictureDataDelegate method
 extension DayPictureViewController: DayPictureDataDelegate {
-    
-    func didUpdatуHeader(_ networkManager: NetworkManager, model: DayPictureModel) {
+    // Added header data
+    func didUpdateHeader(_ networkManager: NetworkManager, model: DayPictureModel) {
         self.headerData = model
     }
-    
+    // Added data for all collection
     func didUpdateDayPicture(_ networkManager: NetworkManager, model: [DayPictureModel]) {
         var data = model
         if !data.isEmpty {
@@ -145,7 +124,7 @@ extension DayPictureViewController: DayPictureDataDelegate {
             self.allPictureArray.append(contentsOf: data)
         }
     }
-    
+    // Print error for delegate 
     func didFailWithError(_ error: Error) {
         print(error.localizedDescription)
     }
@@ -153,11 +132,12 @@ extension DayPictureViewController: DayPictureDataDelegate {
 
 //MARK: UICollectionViewDelegates methods
 extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+    // Setup collection number item
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return allPictureArray.count
     }
     
+    // Setup cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = pictureCollectionView.dequeueReusableCell(withReuseIdentifier: PictureCollectionViewCell.reuseIdentifire, for: indexPath) as! PictureCollectionViewCell
         cell.layer.cornerRadius = cell.frame.size.width / 9
@@ -183,14 +163,16 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         return cell
     }
     
+    // Check position in screen and get more data
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == allPictureArray.count - 1 {  //numberofitem count
+        if indexPath.row == allPictureArray.count - 1 {
             DispatchQueue.main.async {
                 self.loadMore()
             }
         }
     }
     
+    // Method for transit data in detailViewController
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let pictureData = allPictureArray[indexPath.item]
         let hdurl = pictureData.url
@@ -207,21 +189,7 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         navigationController?.pushViewController(detailVC, animated: true)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let sizeCell = CGSize(width: 170, height: 200)
-        return sizeCell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        let lineSpacing: CGFloat = 10
-        return lineSpacing
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let insets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20)
-        return insets
-    }
-    
+    // Setup header view
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = pictureCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as! HeaderReusableView
@@ -249,8 +217,24 @@ extension DayPictureViewController: UICollectionViewDelegate, UICollectionViewDa
         }
     }
     
+    // Methods for setup size and insets
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: 150, height: 200)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let sizeCell = CGSize(width: 170, height: 200)
+        return sizeCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        let lineSpacing: CGFloat = 10
+        return lineSpacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let insets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20)
+        return insets
     }
 }
 
