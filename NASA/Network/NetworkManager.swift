@@ -1,4 +1,3 @@
-//
 //  NetworkManager.swift
 //  NASA
 //
@@ -35,11 +34,11 @@ final class NetworkManager {
     
     //MARK: - Method
     /// Create url depending on parameters
-    func createAllImageURL(search: Bool = false, searchString: String = "", count: Int) -> URL? {
+    func createAllImageURL(search: Bool = false, searchString: String = "", perPage: Int) -> URL? {
         let tunnel = "https://"
         let url = "api.nasa.gov"
         let dayPic = "/planetary/apod?"
-        let countItem = "count=\(count)"
+        let countItem = "count=\(perPage)"
         let key = "&api_key=\(self.apiKey)"
         let searchUrl = "images-"
         let searchKey = "/search?"
@@ -59,8 +58,8 @@ final class NetworkManager {
     
     //MARK: - Private method
     /// Fetch data for day picture url
-    func fetchData(count: Int, completion: @escaping (Result<DayPictureModel, Error>) -> ()) {
-        guard let dayCollection = createAllImageURL(count: count) else {
+    func fetchData(perPage: Int, completion: @escaping (Result<DayPictureModel, Error>) -> ()) {
+        guard let dayCollection = createAllImageURL(perPage: perPage) else {
             completion(.failure(NetworkError.badUrl))
             return
         }
@@ -73,7 +72,7 @@ final class NetworkManager {
                 return
             }
             do {
-                var nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
+                let nasaData = try self.decoder.decode([DayPictureModel].self, from: data)
                 if let firstImage = nasaData.first {
                     self.dayPictureDelegate?.didUpdatуHeader(self, model: firstImage)
                     self.dayPictureDelegate?.didUpdateDayPicture(self, model: nasaData)
