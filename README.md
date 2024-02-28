@@ -1,6 +1,6 @@
 ![Platform: iOS](https://img.shields.io/badge/Platform-iOS-green.svg) 
 
-# NASA <img src="NASA/Media/NasaIcon.png" width="30"/>
+# NASA <img src="https://github.com/SemennikovNA/NASA/blob/main/Media/nasaIcon.png" width="30" />
 
 
 ## Tecnical Stack:
