@@ -16,7 +16,6 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     var networkManager = NetworkManager.shared
     var searchResult: [Item] = [] {
         didSet {
-            print(self.searchResult.count)
             DispatchQueue.main.async {
                 self.searchCollection.reloadData()
             }
@@ -77,7 +76,6 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
     // Load more data
     private func loadMore(currentPage: Int) {
         self.currentPage += 1
-        print(currentPage)
         let searchUrl = networkManager.createAllImageURL(search: true, searchString: self.searchText, perPage: self.perPage, currentPage: self.currentPage)
         DispatchQueue.main.async { [self] in
             networkManager.fetchSearchResult(url: searchUrl) { result in

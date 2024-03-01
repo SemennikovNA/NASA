@@ -43,9 +43,8 @@ final class NetworkManager {
         let searchUrl = "images-"
         let searchKey = "/search?"
         let searchParameters = "q="
-        let pageNumber = currentPage
-        let currentPage = String(describing: pageNumber)
-        let searchPage = "&page=\(currentPage)"
+        let pageNumber = String(describing: currentPage)
+        let searchPage = "&page=\(pageNumber)"
         let pageSize = String(describing: perPage)
         let searchPageSize = "&page_size=\(pageSize)"
         
@@ -53,7 +52,6 @@ final class NetworkManager {
         case true:
             let searchPic = tunnel + searchUrl + url + searchKey
             let searchUrl = searchPic + searchParameters + searchString + searchPage + searchPageSize
-            print(searchUrl)
             return URL(string: searchUrl)
         case false:
             let dayPic = tunnel + url + dayPic + countItem + key
@@ -100,7 +98,6 @@ final class NetworkManager {
         session.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 guard let response = response else { return }
-                print(response)
                 if let error = error {
                     completion(.failure(error))
                 } else {
