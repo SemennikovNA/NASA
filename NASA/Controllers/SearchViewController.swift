@@ -1,4 +1,3 @@
-//
 //  SearchViewController.swift
 //  NASA
 //
@@ -10,7 +9,9 @@ import UIKit
 final class SearchViewController: UIViewController, UISearchControllerDelegate {
     
     //MARK: - Properties
-    
+    var currentPage = 1
+    var perPage = 10
+    var searchText = ""
     var cache = ImageCache.shared
     var networkManager = NetworkManager.shared
     var searchResult: [Item] = [] {
@@ -72,6 +73,29 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
+    
+    // Load more data
+    private func loadMore(currentPage: Int) {
+        self.currentPage += 1
+        print(currentPage)
+        let searchUrl = networkManager.createAllImageURL(search: true, searchString: self.searchText, perPage: self.perPage, currentPage: self.currentPage)
+        DispatchQueue.main.async { [self] in
+            networkManager.fetchSearchResult(url: searchUrl) { result in
+                switch result {
+                case .success(let data):
+                    var newData: [Item] = []
+                    newData.append(contentsOf: data.collection.items)
+                    let startIndex = self.searchResult.count
+                    self.searchResult.append(contentsOf: newData)
+                    
+                    let indexPaths = (startIndex..<self.searchResult.count).map { IndexPath(item: $0, section: 0) }
+                    self.searchCollection.insertItems(at: indexPaths)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
 }
 
 //MARK: - Extension
@@ -79,9 +103,9 @@ final class SearchViewController: UIViewController, UISearchControllerDelegate {
 extension SearchViewController: SearchResultDataDelegate {
     // Added data for search collection
     func didUpdateSearchResult(_ networkManager: NetworkManager, model: [Item]) {
-        self.searchResult = model
+        self.searchResult.append(contentsOf: model)
     }
-    // Print error for delegate 
+    // Print error for delegate
     func didFailWithError(_ error: Error) {
         print(error.localizedDescription)
     }
@@ -122,6 +146,15 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         return cell
     }
     
+    // Check position in screen and get more data
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == searchResult.count - 1 {
+            DispatchQueue.main.async {
+                self.loadMore(currentPage: self.currentPage)
+            }
+        }
+    }
+    
     // Methods for setup size and insets
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         let spacinLine: CGFloat = 10
@@ -144,7 +177,9 @@ extension SearchViewController: UISearchBarDelegate {
     // Send a request based on the text you enter
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text else { return }
-        guard let url = networkManager.createAllImageURL(search: true, searchString: text, perPage: 10) else { return }
+        self.searchText = text
+        guard let url = networkManager.createAllImageURL(search: true, searchString: text, perPage: self.perPage, currentPage: self.currentPage) else { return }
+        self.searchResult.removeAll()
         networkManager.fetchSearchResult(url: url) { result in
             switch result {
             case .success(let success):
@@ -158,7 +193,7 @@ extension SearchViewController: UISearchBarDelegate {
 
 //MARK: - Private extension
 private extension SearchViewController {
-     /// Setup constraints for search view controller
+    /// Setup constraints for search view controller
     func setupConstraints() {
         searchCollection.snp.makeConstraints { make in
             make.top.equalTo(view.snp_topMargin)

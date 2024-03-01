@@ -34,7 +34,7 @@ final class NetworkManager {
     
     //MARK: - Method
     /// Create url depending on parameters
-    func createAllImageURL(search: Bool = false, searchString: String = "", perPage: Int) -> URL? {
+    func createAllImageURL(search: Bool = false, searchString: String = "", perPage: Int = 0, currentPage: Int = 0) -> URL? {
         let tunnel = "https://"
         let url = "api.nasa.gov"
         let dayPic = "/planetary/apod?"
@@ -43,16 +43,21 @@ final class NetworkManager {
         let searchUrl = "images-"
         let searchKey = "/search?"
         let searchParameters = "q="
+        let pageNumber = currentPage
+        let currentPage = String(describing: pageNumber)
+        let searchPage = "&page=\(currentPage)"
+        let pageSize = String(describing: perPage)
+        let searchPageSize = "&page_size=\(pageSize)"
         
         switch search {
         case true:
-            let searchPic = tunnel + searchUrl + url + searchKey + searchParameters + searchString
-            let searchPicUrl = URL(string: searchPic)
-            return searchPicUrl
+            let searchPic = tunnel + searchUrl + url + searchKey
+            let searchUrl = searchPic + searchParameters + searchString + searchPage + searchPageSize
+            print(searchUrl)
+            return URL(string: searchUrl)
         case false:
             let dayPic = tunnel + url + dayPic + countItem + key
-            let urlDayPic = URL(string: dayPic)
-            return urlDayPic
+            return URL(string: dayPic)
         }
     }
     
@@ -127,8 +132,9 @@ final class NetworkManager {
             }
             
             guard let data = data, let image = UIImage(data: data) else {
-                let error = NSError(domain: "com.example.NASA", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode image data"])
-                completion(.failure(error))
+                if let error = error {
+                    completion(.failure(error.localizedDescription as! Error))
+                }
                 return
             }
             
